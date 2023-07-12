@@ -19,8 +19,8 @@ server.use(cors({
 
 server.use(express.static(`${process.env.PATH_WWW}/public`));
 
-server.use(bodyParser.urlencoded({ extended: true }));
-server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({limit: '50mb', extended: true }));
+server.use(bodyParser.json({limit: '50mb'}));
 
 server.use('/api', routes);
 

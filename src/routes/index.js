@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 const router = express.Router();
 const multer = require('multer');
 const usuarioController = require('../controller/UsuarioController');
@@ -7,6 +8,7 @@ const areaController = require('../controller/AreaController');
 const setorController = require('../controller/SetorController');
 const funcaoController = require('../controller/FuncaoController');
 const processoController = require('../controller/ProcessoController');
+const atividadeController = require('../controller/AtividadeController');
 const recursoController = require('../controller/RecursoController');
 const riscoController = require('../controller/RiscoController');
 const causaController = require('../controller/CausaController');
@@ -46,13 +48,13 @@ router.post('/logout', usuarioController.logout);
 router.post('/dis', usuarioController.private, upload.fields([{ name: 'imagens', maxCount: 10 }]), disController.createDIS);
 
 // Rota para obter todos os DISs
-router.get('/dis', usuarioController.private, disController.getDISs);
+router.get('/dis/:page/:ativo', usuarioController.private, disController.getDISs);
 
 // Rota para obter um DIS específico
 router.get('/dis/:id', usuarioController.private, disController.getDIS);
 
 // Rota para atualizar um DIS
-router.put('/dis/:id', usuarioController.private, disController.updateDIS);
+router.put('/dis/:id', usuarioController.private, upload.fields([{ name: 'imagens', maxCount: 10 }]), disController.updateDIS);
 
 // Rota para excluir um DIS
 router.delete('/dis/:id', usuarioController.private, disController.deleteDIS);
@@ -81,6 +83,12 @@ router.get('/processos/:id', processoController.show);
 router.post('/processos', usuarioController.private, processoController.criar);
 router.put('/processos/:id', usuarioController.private, processoController.update);
 router.delete('/processos/:id', usuarioController.private, processoController.delete);
+
+router.get('/atividades/:page/:ativo', atividadeController.listar);
+router.get('/atividades/:id', atividadeController.show);
+router.post('/atividades', usuarioController.private, atividadeController.criar);
+router.put('/atividades/:id', usuarioController.private, atividadeController.update);
+router.delete('/atividades/:id', usuarioController.private, atividadeController.delete);
 
 router.get('/recursos/:page/:ativo', recursoController.listar);
 router.get('/recursos/:id', recursoController.show);

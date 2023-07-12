@@ -9,85 +9,104 @@ const DISchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  fotoFachada: String,
+  fachada: String,
   responsavel: String,
   telefone: String,
   email: String,
   localizacao: String,
   usuarioLogado: String,
-  areas: [{
-    area: {
-      type: String,
-      required: true
+  area: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'area',
+    required: true,
+  },
+  ambiente: String,
+  observacao: String,
+  setores: [{
+    setor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'setor',
+      required: false,
     },
-    fotoArea: String,
-    setores: [{
-      setor: {
-        type: String,
-        required: true
+    funcoes: [{
+      funcao: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'funcao',
+        required: false,
       },
-      funcoes: [{
-        funcao: {
-          type: String,
-          required: true
+      processos: [{
+        processo: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'processo',
+          required: false,
         },
-        processos: [{
-          processo: {
-            type: String,
-            required: true
+        atividades: [{
+          atividade: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'atividade',
+            required: false,
           },
           recursos: [{
             recurso: {
-              type: String,
-              required: true
+              type: mongoose.Schema.Types.ObjectId,
+              ref: 'recurso',
+              required: false,
             },
             riscos: [{
-              risco: {
-                type: String,
-                required: true
+              risco:  {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'risco',
+                required: false,
               },
               causas: [{
-                causa: {
-                  type: String,
-                  required: true
+                causa:  {
+                  type: mongoose.Schema.Types.ObjectId,
+                  ref: 'causa',
+                  required: false,
                 },
-                medidasControle: [{
+                medidas:  [{
                   medida: {
-                    type: String,
-                    required: true
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'medida',
+                    required: false,
                   },
                   probabilidades: [{
                     probabilidade: {
-                      type: String,
-                      required: true
+                      type: mongoose.Schema.Types.ObjectId,
+                      ref: 'probabilidade',
+                      required: false,
                     },
                     severidades: [{
                       severidade: {
-                        type: String,
-                        required: true
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'severidade',
+                        required: false,
                       },
                       niveisRisco: [{
-                        nivel: {
-                          type: String,
-                          required: true
+                        nivelRisco: {
+                          type: mongoose.Schema.Types.ObjectId,
+                          ref: 'nivelRisco',
+                          required: false,
                         },
-                        propostasControle: [{
+                        propostas: [{
                           proposta: {
-                            type: String,
-                            required: true
-                          }
+                            type: mongoose.Schema.Types.ObjectId,
+                            ref: 'proposta',
+                            required: false,
+                          },
                         }]
                       }]
                     }]
                   }]
                 }]
+
               }]
             }]
           }]
         }]
       }]
     }]
-  }]
+  },]
 });
 
 const modelName = 'dis';
