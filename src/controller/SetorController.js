@@ -5,14 +5,18 @@ const SetorController = {
     try {
       const {page, ativo} = req.params;
       let setores = null;
-      if (ativo == 1 ) {
+      if (ativo == 1 && page > 0) {
         setores = await Setor.find({ ativo: true })
           .limit(page * 10)
           .skip((page-1) * 10)
-      } else {
+      } else if (ativo == 0 && page > 0){
         setores = await Setor.find()
         .limit(page * 10)
         .skip((page-1) * 10)
+      } else if( ativo == 1 && page == 0) {
+        setores = await Setor.find({ ativo: true })
+      } else if(ativo == 0 && page == 0) {
+        setores = await Setor.find()
       }
       res.status(200).json(setores);
     } catch (error) {

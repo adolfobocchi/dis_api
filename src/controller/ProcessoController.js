@@ -5,14 +5,18 @@ const ProcessoController = {
     try {
       const {page, ativo} = req.params;
       let processos = null;
-      if (ativo == 1 ) {
+      if (ativo == 1 && page > 0) {
         processos = await Processo.find({ ativo: true })
           .limit(page * 10)
           .skip((page-1) * 10)
-      } else {
+      } else if (ativo == 0 && page > 0){
         processos = await Processo.find()
         .limit(page * 10)
         .skip((page-1) * 10)
+      } else if( ativo == 1 && page == 0) {
+        processos = await Processo.find({ ativo: true })
+      } else if(ativo == 0 && page == 0) {
+        processos = await Processo.find()
       }
       res.status(200).json(processos);
     } catch (error) {

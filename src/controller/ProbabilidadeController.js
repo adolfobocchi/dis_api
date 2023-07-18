@@ -5,14 +5,18 @@ const ProbabilidadeController = {
     try {
       const {page, ativo} = req.params;
       let probabilidades = null;
-      if (ativo == 1 ) {
+      if (ativo == 1 && page > 0) {
         probabilidades = await Probabilidade.find({ ativo: true })
           .limit(page * 10)
           .skip((page-1) * 10)
-      } else {
+      } else if (ativo == 0 && page > 0){
         probabilidades = await Probabilidade.find()
         .limit(page * 10)
         .skip((page-1) * 10)
+      } else if( ativo == 1 && page == 0) {
+        probabilidades = await Probabilidade.find({ ativo: true })
+      } else if(ativo == 0 && page == 0) {
+        probabilidades = await Probabilidade.find()
       }
       res.status(200).json(probabilidades);
     } catch (error) {

@@ -5,14 +5,18 @@ const AreaController = {
     try {
       const {page, ativo} = req.params;
       let areas = null;
-      if (ativo == 1 ) {
+      if (ativo == 1 && page > 0) {
         areas = await Area.find({ ativo: true })
           .limit(page * 10)
           .skip((page-1) * 10)
-      } else {
+      } else if (ativo == 0 && page > 0){
         areas = await Area.find()
         .limit(page * 10)
         .skip((page-1) * 10)
+      } else if( ativo == 1 && page == 0) {
+        areas = await Area.find({ ativo: true })
+      } else if(ativo == 0 && page == 0) {
+        areas = await Area.find()
       }
       res.status(200).json(areas);
     } catch (error) {

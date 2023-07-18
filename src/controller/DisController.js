@@ -31,7 +31,8 @@ exports.createDIS = async (req, res) => {
       ambiente,
       observacao,
       setores})
-      .populate('area')
+    const dis = await DIS.findById(newDis._id)
+    .populate('area')
       .populate('setores.setor')
       .populate('setores.funcoes.funcao')
       .populate('setores.funcoes.processos.processo')
@@ -43,8 +44,8 @@ exports.createDIS = async (req, res) => {
       .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.probabilidade')
       .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.severidade')
       .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.niveisRisco.nivelRisco')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.niveisRisco.propostas.proposta')
-    res.status(201).json(newDis);
+      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.niveisRisco.propostas.proposta') 
+    res.status(201).json(dis);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
@@ -108,6 +109,7 @@ exports.updateDIS = async (req, res) => {
       observacao,
       setores
     } = JSON.parse(req.body.dis);
+    console.log(data);
     if (req.files && Object.keys(req.files).length > 0) {
       console.log(req.files);
       var fachada = req.files.imagens[0].filename;

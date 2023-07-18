@@ -5,14 +5,18 @@ const FuncaoController = {
     try {
       const {page, ativo} = req.params;
       let funcoes = null;
-      if (ativo == 1 ) {
+      if (ativo == 1 && page > 0) {
         funcoes = await Funcao.find({ ativo: true })
           .limit(page * 10)
           .skip((page-1) * 10)
-      } else {
+      } else if (ativo == 0 && page > 0){
         funcoes = await Funcao.find()
         .limit(page * 10)
         .skip((page-1) * 10)
+      } else if( ativo == 1 && page == 0) {
+        funcoes = await Funcao.find({ ativo: true })
+      } else if(ativo == 0 && page == 0) {
+        funcoes = await Funcao.find()
       }
       res.status(200).json(funcoes);
     } catch (error) {

@@ -5,14 +5,20 @@ const RiscoController = {
     try {
       const {page, ativo} = req.params;
       let riscos = null;
-      if (ativo == 1 ) {
+      if (ativo == 1 && page > 0) {
         riscos = await Risco.find({ ativo: true })
           .limit(page * 10)
           .skip((page-1) * 10)
-      } else {
+          .sort({nome: 1})
+      } else if (ativo == 0 && page > 0){
         riscos = await Risco.find()
         .limit(page * 10)
         .skip((page-1) * 10)
+        .sort({nome: 1})
+      } else if( ativo == 1 && page == 0) {
+        riscos = await Risco.find({ ativo: true }).sort({nome: 1})
+      } else if(ativo == 0 && page == 0) {
+        riscos = await Risco.find().sort({nome: 1})
       }
       res.status(200).json(riscos);
     } catch (error) {

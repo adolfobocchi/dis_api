@@ -5,14 +5,18 @@ const SeveridadeController = {
     try {
       const {page, ativo} = req.params;
       let severidades = null;
-      if (ativo == 1 ) {
+      if (ativo == 1 && page > 0) {
         severidades = await Severidade.find({ ativo: true })
           .limit(page * 10)
           .skip((page-1) * 10)
-      } else {
+      } else if (ativo == 0 && page > 0){
         severidades = await Severidade.find()
         .limit(page * 10)
         .skip((page-1) * 10)
+      } else if( ativo == 1 && page == 0) {
+        severidades = await Severidade.find({ ativo: true })
+      } else if(ativo == 0 && page == 0) {
+        severidades = await Severidade.find()
       }
       res.status(200).json(severidades);
     } catch (error) {

@@ -5,14 +5,18 @@ const AtividadeController = {
     try {
       const {page, ativo} = req.params;
       let atividades = null;
-      if (ativo == 1 ) {
+      if (ativo == 1 && page > 0) {
         atividades = await Atividade.find({ ativo: true })
           .limit(page * 10)
           .skip((page-1) * 10)
-      } else {
+      } else if (ativo == 0 && page > 0){
         atividades = await Atividade.find()
         .limit(page * 10)
         .skip((page-1) * 10)
+      } else if( ativo == 1 && page == 0) {
+        atividades = await Atividade.find({ ativo: true })
+      } else if(ativo == 0 && page == 0) {
+        atividades = await Atividade.find()
       }
       res.status(200).json(atividades);
     } catch (error) {
