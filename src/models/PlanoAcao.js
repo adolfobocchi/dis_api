@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const propostaSchema = new mongoose.Schema({
+const planoAcaoSchema = new mongoose.Schema({
   nome: {
     type: String,
     required: true,
@@ -12,10 +12,10 @@ const propostaSchema = new mongoose.Schema({
   }
 });
 
-const modelName = 'proposta';
+const modelName = 'planoAcao';
 
 if(mongoose.connection && mongoose.connection.models[modelName]) {
-  module.exports = mongoose.connection.models[propostaSchema];
+  module.exports = mongoose.connection.models[planoAcaoSchema];
 } else {
-  module.exports = mongoose.model(modelName, propostaSchema);
+  module.exports = mongoose.model(modelName, planoAcaoSchema);
 }

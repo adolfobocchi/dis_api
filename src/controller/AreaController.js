@@ -74,8 +74,8 @@ const AreaController = {
       res.status(500).json({ message: error.message });
     }
   },
-  };
+};
   
-  module.exports = AreaController;
+module.exports = AreaController;
 
 // Restante das funções CRUD para Area (getArea, updateArea, deleteArea)

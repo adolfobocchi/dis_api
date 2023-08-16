@@ -4,7 +4,16 @@ const nivelRiscoSchema = new mongoose.Schema({
   nome: {
     type: String,
     required: true,
-    unique: true
+  },
+  probabilidadeValor: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  severidadeValor: {
+    type: Number,
+    required: true,
+    default: 0
   },
   ativo: {
     type: Boolean,

@@ -2,8 +2,9 @@ const mongoose = require('mongoose');
 
 const DISchema = new mongoose.Schema({
   empresa: {
-    type: String,
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'empresa',
+    required: true,
   },
   data: {
     type: String,
@@ -11,17 +12,16 @@ const DISchema = new mongoose.Schema({
   },
   fachada: String,
   responsavel: String,
+  funcao: String,
   telefone: String,
   email: String,
-  localizacao: String,
-  usuarioLogado: String,
-  area: {
+  usuario: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'area',
+    ref: 'usuario',
     required: true,
   },
   ambiente: String,
-  observacao: String,
+  observacaoAmbiente: String,
   setores: [{
     setor: {
       type: mongoose.Schema.Types.ObjectId,
@@ -34,72 +34,75 @@ const DISchema = new mongoose.Schema({
         ref: 'funcao',
         required: false,
       },
-      processos: [{
-        processo: {
+      funcionarios: {
+        type: Number,
+        default: 0,
+        required: false,
+      },
+      atividades: [{
+        atividade:{
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'processo',
+          ref: 'atividade',
           required: false,
         },
-        atividades: [{
-          atividade: {
+        perigos: [{
+          perigo: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'atividade',
+            ref: 'perigo',
             required: false,
           },
-          recursos: [{
-            recurso: {
-              type: mongoose.Schema.Types.ObjectId,
-              ref: 'recurso',
-              required: false,
-            },
+          agentesRisco: [{
+            agenteRisco: {},
             riscos: [{
               risco:  {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'risco',
                 required: false,
               },
-              causas: [{
-                causa:  {
+              viaAbsorcao: [],
+              frequenciaExposicao: [],
+              duracaoExposicao: [],
+              causa:[{causa:  {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'causa',
+                required: false,
+              }}],
+              medida: [{medida: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'medida',
+                required: false,
+              }}],
+              avaliacao: [],
+              probabilidade:[{probabilidade: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'probabilidade',
+                required: false,
+              }}] ,
+              severidade:[{severidade: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'severidade',
+                required: false,
+              }}],
+              nivelRisco:[{nivelRisco: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'nivelRisco',
+                required: false,
+              }}],
+              planosAcao: [{
+                planoAcao: {
                   type: mongoose.Schema.Types.ObjectId,
-                  ref: 'causa',
+                  ref: 'planoAcao',
                   required: false,
                 },
-                medidas:  [{
-                  medida: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'medida',
-                    required: false,
-                  },
-                  probabilidades: [{
-                    probabilidade: {
-                      type: mongoose.Schema.Types.ObjectId,
-                      ref: 'probabilidade',
-                      required: false,
-                    },
-                    severidades: [{
-                      severidade: {
-                        type: mongoose.Schema.Types.ObjectId,
-                        ref: 'severidade',
-                        required: false,
-                      },
-                      niveisRisco: [{
-                        nivelRisco: {
-                          type: mongoose.Schema.Types.ObjectId,
-                          ref: 'nivelRisco',
-                          required: false,
-                        },
-                        propostas: [{
-                          proposta: {
-                            type: mongoose.Schema.Types.ObjectId,
-                            ref: 'proposta',
-                            required: false,
-                          },
-                        }]
-                      }]
-                    }]
-                  }]
-                }]
-
+                intencao: [],
+                prioridade: [],
+                prazo: [],
+                monitoramento:[{monitoramento: {
+                  type: mongoose.Schema.Types.ObjectId,
+                  ref: 'monitoramento',
+                  required: false,
+                }}],
+                status: [],
               }]
             }]
           }]

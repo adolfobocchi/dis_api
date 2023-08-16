@@ -7,16 +7,17 @@ const disController = require('../controller/DisController');
 const areaController = require('../controller/AreaController');
 const setorController = require('../controller/SetorController');
 const funcaoController = require('../controller/FuncaoController');
-const processoController = require('../controller/ProcessoController');
+const perigoController = require('../controller/PerigoController');
 const atividadeController = require('../controller/AtividadeController');
-const recursoController = require('../controller/RecursoController');
+const monitoramentoController = require('../controller/MonitoramentoController');
 const riscoController = require('../controller/RiscoController');
 const causaController = require('../controller/CausaController');
 const medidaController = require('../controller/MedidaController');
 const probabilidadeController = require('../controller/ProbabilidadeController');
 const severidadeController = require('../controller/SeveridadeController');
 const nivelriscoController = require('../controller/NivelRiscoController');
-const propostaController = require('../controller/PropostaController');
+const planoAcaoController = require('../controller/PlanoAcaoController');
+const empresaController = require('../controller/EmpresaController');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -37,7 +38,11 @@ router.get('/ping',(req, res) => {
 })
 
 // Rota para cadastrar um novo usuário
-router.post('/register',  usuarioController.register);
+router.post('/usuarios', usuarioController.private,  usuarioController.register);
+router.get('/usuarios/:page/:ativo', usuarioController.private,  usuarioController.listar);
+router.put('/usuarios/:id', usuarioController.private,  usuarioController.update);
+router.put('/usuarios/:id/password', usuarioController.private,  usuarioController.updatePassword);
+router.delete('/usuarios/:id', usuarioController.private,  usuarioController.delete);
 
 // Rota para fazer login
 router.post('/login', usuarioController.login);
@@ -78,11 +83,11 @@ router.post('/funcoes', usuarioController.private, funcaoController.criar);
 router.put('/funcoes/:id', usuarioController.private, funcaoController.update);
 router.delete('/funcoes/:id', usuarioController.private, funcaoController.delete);
 
-router.get('/processos/:page/:ativo', processoController.listar);
-router.get('/processos/:id', processoController.show);
-router.post('/processos', usuarioController.private, processoController.criar);
-router.put('/processos/:id', usuarioController.private, processoController.update);
-router.delete('/processos/:id', usuarioController.private, processoController.delete);
+router.get('/perigos/:page/:ativo', perigoController.listar);
+router.get('/perigos/:id', perigoController.show);
+router.post('/perigos', usuarioController.private, perigoController.criar);
+router.put('/perigos/:id', usuarioController.private, perigoController.update);
+router.delete('/perigos/:id', usuarioController.private, perigoController.delete);
 
 router.get('/atividades/:page/:ativo', atividadeController.listar);
 router.get('/atividades/:id', atividadeController.show);
@@ -90,11 +95,11 @@ router.post('/atividades', usuarioController.private, atividadeController.criar)
 router.put('/atividades/:id', usuarioController.private, atividadeController.update);
 router.delete('/atividades/:id', usuarioController.private, atividadeController.delete);
 
-router.get('/recursos/:page/:ativo', recursoController.listar);
-router.get('/recursos/:id', recursoController.show);
-router.post('/recursos', usuarioController.private, recursoController.criar);
-router.put('/recursos/:id', usuarioController.private, recursoController.update);
-router.delete('/recursos/:id', usuarioController.private, recursoController.delete);
+router.get('/monitoramentos/:page/:ativo', monitoramentoController.listar);
+router.get('/monitoramentos/:id', monitoramentoController.show);
+router.post('/monitoramentos', usuarioController.private, monitoramentoController.criar);
+router.put('/monitoramentos/:id', usuarioController.private, monitoramentoController.update);
+router.delete('/monitoramentos/:id', usuarioController.private, monitoramentoController.delete);
 
 router.get('/riscos/:page/:ativo', riscoController.listar);
 router.get('/riscos/:id', riscoController.show);
@@ -132,10 +137,16 @@ router.post('/nivelriscos', usuarioController.private, nivelriscoController.cria
 router.put('/nivelriscos/:id', usuarioController.private, nivelriscoController.update);
 router.delete('/nivelriscos/:id', usuarioController.private, nivelriscoController.delete);
 
-router.get('/propostas/:page/:ativo', propostaController.listar);
-router.get('/propostas/:id', propostaController.show);
-router.post('/propostas', usuarioController.private, propostaController.criar);
-router.put('/propostas/:id', usuarioController.private, propostaController.update);
-router.delete('/propostas/:id', usuarioController.private, propostaController.delete);
+router.get('/planosacao/:page/:ativo', planoAcaoController.listar);
+router.get('/planosacao/:id', planoAcaoController.show);
+router.post('/planosacao', usuarioController.private, planoAcaoController.criar);
+router.put('/planosacao/:id', usuarioController.private, planoAcaoController.update);
+router.delete('/planosacao/:id', usuarioController.private, planoAcaoController.delete);
+
+router.get('/empresas/:page/:ativo', empresaController.listar);
+router.get('/empresas/:id', empresaController.show);
+router.post('/empresas', usuarioController.private, empresaController.criar);
+router.put('/empresas/:id', usuarioController.private, empresaController.update);
+router.delete('/empresas/:id', usuarioController.private, empresaController.delete);
 
 module.exports = router;

@@ -8,14 +8,15 @@ exports.createDIS = async (req, res) => {
       empresa,
       data,
       responsavel,
+      funcao,
       telefone,
       email,
-      localizacao,
-      area,
+      usuario,
       ambiente,
-      observacao,
+      observacaoAmbiente,
       setores
     } = JSON.parse(req.body.dis);
+    console.log(data);
     if (req.files && Object.keys(req.files).length > 0) {
       var fachada = req.files.imagens[0].filename;
     }
@@ -24,27 +25,28 @@ exports.createDIS = async (req, res) => {
       data,
       fachada,
       responsavel,
+      funcao,
       telefone,
       email,
-      localizacao,
-      area,
+      usuario,
       ambiente,
-      observacao,
+      observacaoAmbiente,
       setores})
     const dis = await DIS.findById(newDis._id)
-    .populate('area')
-      .populate('setores.setor')
-      .populate('setores.funcoes.funcao')
-      .populate('setores.funcoes.processos.processo')
-      .populate('setores.funcoes.processos.atividades.atividade')
-      .populate('setores.funcoes.processos.atividades.recursos.recurso')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.risco')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.causa')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.medida')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.probabilidade')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.severidade')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.niveisRisco.nivelRisco')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.niveisRisco.propostas.proposta') 
+    .populate({path: 'empresa', populate: {path: 'area', model: 'area'}})
+    .populate('usuario')  
+    .populate('setores.setor')
+    .populate('setores.funcoes.funcao')
+    .populate('setores.funcoes.atividades.atividade')
+    .populate('setores.funcoes.atividades.perigos.perigo')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.risco')
+    .populate({path: 'setores.funcoes.atividades.perigos.agentesRisco.riscos.causa.causa',populate: {path: 'risco', model: 'risco'} })
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.medida.medida')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.probabilidade.probabilidade')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.severidade.severidade')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.nivelRisco.nivelRisco')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.planosAcao.planoAcao')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.planosAcao.monitoramento.monitoramento')
     res.status(201).json(dis);
   } catch (error) {
     console.log(error);
@@ -57,19 +59,20 @@ exports.getDISs = async (req, res) => {
   try {
     const {page, ativo} = req.params;
     let dis = await DIS.find()
-      .populate('area')
-      .populate('setores.setor')
-      .populate('setores.funcoes.funcao')
-      .populate('setores.funcoes.processos.processo')
-      .populate('setores.funcoes.processos.atividades.atividade')
-      .populate('setores.funcoes.processos.atividades.recursos.recurso')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.risco')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.causa')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.medida')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.probabilidade')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.severidade')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.niveisRisco.nivelRisco')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.niveisRisco.propostas.proposta')
+    .populate({path: 'empresa', populate: {path: 'area', model: 'area'}})
+    .populate('usuario')  
+    .populate('setores.setor')
+    .populate('setores.funcoes.funcao')
+    .populate('setores.funcoes.atividades.atividade')
+    .populate('setores.funcoes.atividades.perigos.perigo')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.risco')
+    .populate({path: 'setores.funcoes.atividades.perigos.agentesRisco.riscos.causa.causa',populate: {path: 'risco', model: 'risco'} })
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.medida.medida')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.probabilidade.probabilidade')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.severidade.severidade')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.nivelRisco.nivelRisco')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.planosAcao.planoAcao')
+    .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.planosAcao.monitoramento.monitoramento')
       .limit(page * 10)
       .skip((page-1) * 10);
     
@@ -96,17 +99,16 @@ exports.getDIS = async (req, res) => {
 // Função para atualizar um DIS
 exports.updateDIS = async (req, res) => {
   try {
-    console.log(req.body.dis);
     const { 
       empresa,
       data,
       responsavel,
+      funcao,
       telefone,
       email,
-      localizacao,
-      area,
+      usuario,
       ambiente,
-      observacao,
+      observacaoAmbiente,
       setores
     } = JSON.parse(req.body.dis);
     console.log(data);
@@ -119,26 +121,27 @@ exports.updateDIS = async (req, res) => {
       data,
       fachada,
       responsavel,
+      funcao,
       telefone,
       email,
-      localizacao,
-      area,
+      usuario,
       ambiente,
-      observacao,
+      observacaoAmbiente,
       setores}, { new: true })
-      .populate('area')
+      .populate({path: 'empresa', populate: {path: 'area', model: 'area'}})
+      .populate('usuario')  
       .populate('setores.setor')
       .populate('setores.funcoes.funcao')
-      .populate('setores.funcoes.processos.processo')
-      .populate('setores.funcoes.processos.atividades.atividade')
-      .populate('setores.funcoes.processos.atividades.recursos.recurso')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.risco')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.causa')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.medida')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.probabilidade')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.severidade')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.niveisRisco.nivelRisco')
-      .populate('setores.funcoes.processos.atividades.recursos.riscos.causas.medidas.probabilidades.severidades.niveisRisco.propostas.proposta')
+      .populate('setores.funcoes.atividades.atividade')
+      .populate('setores.funcoes.atividades.perigos.perigo')
+      .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.risco')
+      .populate({path: 'setores.funcoes.atividades.perigos.agentesRisco.riscos.causa.causa',populate: {path: 'risco', model: 'risco'} })
+      .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.medida.medida')
+      .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.probabilidade.probabilidade')
+      .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.severidade.severidade')
+      .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.nivelRisco.nivelRisco')
+      .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.planosAcao.planoAcao')
+      .populate('setores.funcoes.atividades.perigos.agentesRisco.riscos.planosAcao.monitoramento.monitoramento')
     if (!dis) {
       return res.status(404).json({ message: 'DIS não encontrado' });
     }

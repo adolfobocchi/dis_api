@@ -18,20 +18,20 @@ const NivelRiscoController = {
       } else if(ativo == 0 && page == 0) {
         nivelRiscos = await NivelRisco.find()
       }
-      res.status(200).json(nivelRiscos);
+      return res.status(200).json(nivelRiscos);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
   
   // Criar uma nova nivelRisco
   async criar(req, res) {
     try {
-      const {nome, ativo } = req.body;
-      const novaNivelRisco = await NivelRisco.create({nome, ativo });
-      res.status(201).json(novaNivelRisco);
+      const {nome, probabilidadeValor, severidadeValor, ativo } = req.body;
+      const novaNivelRisco = await NivelRisco.create({nome, probabilidadeValor, severidadeValor, ativo });
+      return res.status(201).json(novaNivelRisco);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      return res.status(400).json({ message: error.message });
     }
   },
   
@@ -40,23 +40,25 @@ const NivelRiscoController = {
     try {
       const nivelRisco = await NivelRisco.findById(req.params.id);
       if (nivelRisco) {
-        res.status(201).json(nivelRisco);
+        return res.status(201).json(nivelRisco);
       } else {
-        res.status(404).json({ message: 'NivelRisco não encontrada' });
+        return res.status(404).json({ message: 'NivelRisco não encontrada' });
       }
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
   
   // Atualizar uma nivelRisco existente
   async update(req, res) {
     try {
-      const {nome, ativo} = req.body;
-      const nivelRisco = await NivelRisco.findByIdAndUpdate(req.params.id, {nome, ativo},  { new: true });
-      res.status(201).json(nivelRisco);
+      const {nome, probabilidadeValor, severidadeValor, ativo} = req.body;
+      const nivelRisco = await NivelRisco.findByIdAndUpdate(req.params.id, {nome, probabilidadeValor, severidadeValor, ativo},  { new: true });
+      console.log(nivelRisco);
+      return res.status(201).json(nivelRisco);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      console.log(error);
+      return res.status(400).json({ message: error.message });
     }
   },
   
@@ -66,12 +68,12 @@ const NivelRiscoController = {
       const nivelRisco = await NivelRisco.findByIdAndDelete(req.params.id);
       if (nivelRisco) {
         const id = nivelRisco._id;
-        res.status(201).json(id);
+        return res.status(201).json(id);
       } else {
-        res.status(404).json({ message: 'NivelRisco não encontrada' });
+        return res.status(404).json({ message: 'NivelRisco não encontrada' });
       }
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
   };

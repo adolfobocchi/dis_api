@@ -6,6 +6,11 @@ const severidadeSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  valor: {
+    type: Number,
+    required: true,
+    default: 0
+  },
   ativo: {
     type: Boolean,
     default: true,    

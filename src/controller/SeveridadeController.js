@@ -27,8 +27,8 @@ const SeveridadeController = {
   // Criar uma nova severidade
   async criar(req, res) {
     try {
-      const {nome, ativo } = req.body;
-      const novaSeveridade = await Severidade.create({nome, ativo });
+      const {nome, valor, ativo } = req.body;
+      const novaSeveridade = await Severidade.create({nome, valor, ativo });
       res.status(201).json(novaSeveridade);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -52,8 +52,8 @@ const SeveridadeController = {
   // Atualizar uma severidade existente
   async update(req, res) {
     try {
-      const {nome, ativo} = req.body;
-      const severidade = await Severidade.findByIdAndUpdate(req.params.id, {nome, ativo},  { new: true });
+      const {nome, valor, ativo} = req.body;
+      const severidade = await Severidade.findByIdAndUpdate(req.params.id, {nome, valor, ativo},  { new: true });
       res.status(201).json(severidade);
     } catch (error) {
       res.status(400).json({ message: error.message });

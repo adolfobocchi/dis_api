@@ -11,10 +11,25 @@ const usuarioSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  tipo: {
+    type: String,
+    enum: ['assistente', 'técnico', 'administrador'],
+    default: 'assistente',
+    required: true,
+  },
+  registro: {
+    type: String,
+    required: false,
+    default: ''
+  },
   password: {
     type: String,
     required: true
   },
+  ativo: {
+    type: Boolean,
+    default: true,    
+  }, 
   token:String
 });
 

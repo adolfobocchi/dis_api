@@ -27,8 +27,8 @@ const ProbabilidadeController = {
   // Criar uma nova probabilidade
   async criar(req, res) {
     try {
-      const {nome, ativo } = req.body;
-      const novaProbabilidade = await Probabilidade.create({nome, ativo });
+      const {nome, valor, ativo } = req.body;
+      const novaProbabilidade = await Probabilidade.create({nome, valor, ativo });
       res.status(201).json(novaProbabilidade);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -52,8 +52,8 @@ const ProbabilidadeController = {
   // Atualizar uma probabilidade existente
   async update(req, res) {
     try {
-      const {nome, ativo} = req.body;
-      const probabilidade = await Probabilidade.findByIdAndUpdate(req.params.id, {nome, ativo},  { new: true });
+      const {nome, valor, ativo} = req.body;
+      const probabilidade = await Probabilidade.findByIdAndUpdate(req.params.id, {nome, valor, ativo},  { new: true });
       res.status(201).json(probabilidade);
     } catch (error) {
       res.status(400).json({ message: error.message });

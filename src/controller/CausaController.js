@@ -6,18 +6,19 @@ const CausaController = {
       const {page, ativo} = req.params;
       let causas = null;
       if (ativo == 1 && page > 0) {
-        causas = await Causa.find({ ativo: true })
+        causas = await Causa.find({ ativo: true }).populate('risco')
           .limit(page * 10)
           .skip((page-1) * 10)
       } else if (ativo == 0 && page > 0){
-        causas = await Causa.find()
+        causas = await Causa.find().populate('risco')
         .limit(page * 10)
         .skip((page-1) * 10)
       } else if( ativo == 1 && page == 0) {
-        causas = await Causa.find({ ativo: true })
+        causas = await Causa.find({ ativo: true }).populate('risco')
       } else if(ativo == 0 && page == 0) {
-        causas = await Causa.find()
+        causas = await Causa.find().populate('risco')
       }
+      console.log(causas);
       res.status(200).json(causas);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -27,9 +28,10 @@ const CausaController = {
   // Criar uma nova causa
   async criar(req, res) {
     try {
-      const {nome, ativo } = req.body;
-      const novaCausa = await Causa.create({nome, ativo });
-      res.status(201).json(novaCausa);
+      const {nome, risco, ativo } = req.body;
+      const novaCausa = await Causa.create({nome, risco, ativo });
+      const causa = await Causa.findById(novaCausa._id).populate('risco');
+      res.status(201).json(causa);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -38,7 +40,7 @@ const CausaController = {
   // Buscar uma causa pelo ID
   async show (req, res) {
     try {
-      const causa = await Causa.findById(req.params.id);
+      const causa = await Causa.findById(req.params.id).populate('risco');
       if (causa) {
         res.status(201).json(causa);
       } else {
@@ -52,8 +54,8 @@ const CausaController = {
   // Atualizar uma causa existente
   async update(req, res) {
     try {
-      const {nome, ativo} = req.body;
-      const causa = await Causa.findByIdAndUpdate(req.params.id, {nome, ativo},  { new: true });
+      const {nome, risco, ativo} = req.body;
+      const causa = await Causa.findByIdAndUpdate(req.params.id, {nome, risco, ativo},  { new: true }).populate('risco');
       res.status(201).json(causa);
     } catch (error) {
       res.status(400).json({ message: error.message });

@@ -6,6 +6,11 @@ const causaSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  risco: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'risco',
+    required: false,
+  },
   ativo: {
     type: Boolean,
     default: true,    
