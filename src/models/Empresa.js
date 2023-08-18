@@ -4,7 +4,7 @@ const moment = require('moment');
 const EmpresaSchema = new mongoose.Schema({
   razaoSocial: {
     type: String,
-    required: false
+    required: true
   },
   nomeFantasia: {
     type: String,

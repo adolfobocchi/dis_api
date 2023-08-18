@@ -10,15 +10,23 @@ const RiscoController = {
           .limit(page * 10)
           .skip((page-1) * 10)
           .sort({nome: 1})
+          .populate('causas')
+          .populate('planosAcao')
       } else if (ativo == 0 && page > 0){
         riscos = await Risco.find()
         .limit(page * 10)
         .skip((page-1) * 10)
         .sort({nome: 1})
+        .populate('causas')
+        .populate('planosAcao')
       } else if( ativo == 1 && page == 0) {
         riscos = await Risco.find({ ativo: true }).sort({nome: 1})
+        .populate('causas')
+        .populate('planosAcao')
       } else if(ativo == 0 && page == 0) {
         riscos = await Risco.find().sort({nome: 1})
+        .populate('causas')
+        .populate('planosAcao')
       }
       res.status(200).json(riscos);
     } catch (error) {
@@ -29,9 +37,12 @@ const RiscoController = {
   // Criar uma nova risco
   async criar(req, res) {
     try {
-      const {nome, ativo } = req.body;
-      const novaRisco = await Risco.create({nome, ativo });
-      res.status(201).json(novaRisco);
+      const {nome, viasAbsorcao, agentesRisco, causas, planosAcao, ativo } = req.body;
+      const novaRisco = await Risco.create({nome, viasAbsorcao, agentesRisco, causas, planosAcao, ativo });
+      const risco = await Risco.findById(novaRisco._id)
+      .populate('causas')
+      .populate('planosAcao')
+      res.status(201).json(risco);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -54,8 +65,10 @@ const RiscoController = {
   // Atualizar uma risco existente
   async update(req, res) {
     try {
-      const {nome, ativo} = req.body;
-      const risco = await Risco.findByIdAndUpdate(req.params.id, {nome, ativo},  { new: true });
+      const {nome, viasAbsorcao, agentesRisco, causas, planosAcao, ativo} = req.body;
+      const risco = await Risco.findByIdAndUpdate(req.params.id, {nome, viasAbsorcao, agentesRisco, causas, planosAcao, ativo},  { new: true })
+      .populate('causas')
+      .populate('planosAcao');
       res.status(201).json(risco);
     } catch (error) {
       res.status(400).json({ message: error.message });

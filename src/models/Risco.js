@@ -6,6 +6,18 @@ const riscoSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  viasAbsorcao: [],
+  agentesRisco: [],
+  causas: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'causa',
+    required: false,
+  }],
+  planosAcao: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'planoAcao',
+    required: false,
+  }],
   ativo: {
     type: Boolean,
     default: true,    
