@@ -7,16 +7,18 @@ const FuncaoController = {
       let funcoes = null;
       if (ativo == 1 && page > 0) {
         funcoes = await Funcao.find({ ativo: true })
-          .limit(page * 10)
+          .limit(10)
           .skip((page-1) * 10)
+          .sort({ nome: 1 })
       } else if (ativo == 0 && page > 0){
         funcoes = await Funcao.find()
-        .limit(page * 10)
+        .limit(10)
         .skip((page-1) * 10)
+        .sort({ nome: 1 })
       } else if( ativo == 1 && page == 0) {
-        funcoes = await Funcao.find({ ativo: true })
+        funcoes = await Funcao.find({ ativo: true }).sort({ nome: 1 })
       } else if(ativo == 0 && page == 0) {
-        funcoes = await Funcao.find()
+        funcoes = await Funcao.find().sort({ nome: 1 })
       }
       res.status(200).json(funcoes);
     } catch (error) {
@@ -27,8 +29,8 @@ const FuncaoController = {
   // Criar uma nova funcao
   async criar(req, res) {
     try {
-      const {nome, ativo } = req.body;
-      const novaFuncao = await Funcao.create({nome, ativo });
+      const {nome, descricao, ativo } = req.body;
+      const novaFuncao = await Funcao.create({nome, descricao, ativo });
       res.status(201).json(novaFuncao);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -52,8 +54,8 @@ const FuncaoController = {
   // Atualizar uma funcao existente
   async update(req, res) {
     try {
-      const {nome, ativo} = req.body;
-      const funcao = await Funcao.findByIdAndUpdate(req.params.id, {nome, ativo},  { new: true });
+      const {nome, descricao,  ativo} = req.body;
+      const funcao = await Funcao.findByIdAndUpdate(req.params.id, {nome,descricao,  ativo},  { new: true });
       res.status(201).json(funcao);
     } catch (error) {
       res.status(400).json({ message: error.message });

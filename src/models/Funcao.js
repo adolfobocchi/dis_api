@@ -6,6 +6,10 @@ const funcaoSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  descricao:{
+    type: String,
+    required: false,
+  },
   ativo: {
     type: Boolean,
     default: true,    

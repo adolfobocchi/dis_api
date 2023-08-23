@@ -24,28 +24,28 @@ const EmpresaController = {
       let empresas = null;
       if (ativo == 1 && page > 0) {
         empresas = await Empresa.find({ ativo: true })
-          .limit(page * 10)
+          .limit(10)
           .skip((page - 1) * 10)
           .populate('area')
           .populate('usuario')
-          .populate('tecnico')
+          .populate('tecnico').sort({ nome: 1 })
       } else if (ativo == 0 && page > 0) {
         empresas = await Empresa.find()
-          .limit(page * 10)
+          .limit(10)
           .skip((page - 1) * 10)
           .populate('area')
           .populate('usuario')
-          .populate('tecnico')
+          .populate('tecnico').sort({ nome: 1 })
       } else if (ativo == 1 && page == 0) {
         empresas = await Empresa.find({ ativo: true })
         .populate('area')
         .populate('usuario')
-        .populate('tecnico')
+        .populate('tecnico').sort({ nome: 1 })
       } else if (ativo == 0 && page == 0) {
         empresas = await Empresa.find()
         .populate('area')
         .populate('usuario')
-        .populate('tecnico')
+        .populate('tecnico').sort({ nome: 1 })
       }
       return res.status(200).json(empresas);
     } catch (error) {

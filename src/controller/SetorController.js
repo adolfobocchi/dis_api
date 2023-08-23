@@ -7,16 +7,16 @@ const SetorController = {
       let setores = null;
       if (ativo == 1 && page > 0) {
         setores = await Setor.find({ ativo: true })
-          .limit(page * 10)
-          .skip((page-1) * 10)
+          .limit(10)
+          .skip((page-1) * 10).sort({ nome: 1 })
       } else if (ativo == 0 && page > 0){
         setores = await Setor.find()
-        .limit(page * 10)
-        .skip((page-1) * 10)
+        .limit(10)
+        .skip((page-1) * 10).sort({ nome: 1 })
       } else if( ativo == 1 && page == 0) {
-        setores = await Setor.find({ ativo: true })
+        setores = await Setor.find({ ativo: true }).sort({ nome: 1 })
       } else if(ativo == 0 && page == 0) {
-        setores = await Setor.find()
+        setores = await Setor.find().sort({ nome: 1 })
       }
       res.status(200).json(setores);
     } catch (error) {

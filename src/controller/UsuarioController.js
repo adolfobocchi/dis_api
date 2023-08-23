@@ -71,15 +71,13 @@ const UsuarioController = {
       const page = req.params.page;
       const ativo = req.params.ativo;
       let usuarios = null;
-      console.log(page);
-      console.log(ativo);
       if (ativo == 1 && page > 0) {
         usuarios = await Usuario.find({ ativo: true }).select(['-password', '-token'])
-          .limit(page * 10)
+          .limit(10)
           .skip((page-1) * 10)
       } else if (ativo == 0 && page > 0){
         usuarios = await Usuario.find().select(['-password', '-token'])
-        .limit(page * 10)
+        .limit(10)
         .skip((page-1) * 10)
       } else if( ativo == 1 && page == 0) {
         usuarios = await Usuario.find({ ativo: true }).select(['-password', '-token'])

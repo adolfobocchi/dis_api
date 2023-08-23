@@ -7,16 +7,16 @@ const PerigoController = {
       let perigos = null;
       if (ativo == 1 && page > 0) {
         perigos = await Perigo.find({ ativo: true })
-          .limit(page * 10)
-          .skip((page-1) * 10)
+          .limit(10)
+          .skip((page-1) * 10).sort({ nome: 1 })
       } else if (ativo == 0 && page > 0){
         perigos = await Perigo.find()
-        .limit(page * 10)
-        .skip((page-1) * 10)
+        .limit(10)
+        .skip((page-1) * 10).sort({ nome: 1 })
       } else if( ativo == 1 && page == 0) {
-        perigos = await Perigo.find({ ativo: true })
+        perigos = await Perigo.find({ ativo: true }).sort({ nome: 1 })
       } else if(ativo == 0 && page == 0) {
-        perigos = await Perigo.find()
+        perigos = await Perigo.find().sort({ nome: 1 })
       }
       res.status(200).json(perigos);
     } catch (error) {

@@ -113,7 +113,7 @@ exports.getDISs = async (req, res) => {
     .populate('niveisRisco.nivelRisco')
     .populate('planosAcao.planoAcao')
     .populate('monitoramentos.monitoramento')
-      .limit(page * 10)
+      .limit(10)
       .skip((page-1) * 10);
     
     res.status(200).json(dis);

@@ -7,16 +7,16 @@ const CausaController = {
       let causas = null;
       if (ativo == 1 && page > 0) {
         causas = await Causa.find({ ativo: true })
-          .limit(page * 10)
-          .skip((page-1) * 10)
+          .limit(10)
+          .skip((page-1) * 10).sort({ nome: 1 })
       } else if (ativo == 0 && page > 0){
         causas = await Causa.find()
-        .limit(page * 10)
-        .skip((page-1) * 10)
+        .limit(10)
+        .skip((page-1) * 10).sort({ nome: 1 })
       } else if( ativo == 1 && page == 0) {
-        causas = await Causa.find({ ativo: true })
+        causas = await Causa.find({ ativo: true }).sort({ nome: 1 })
       } else if(ativo == 0 && page == 0) {
-        causas = await Causa.find()
+        causas = await Causa.find().sort({ nome: 1 })
       }
       console.log(causas);
       res.status(200).json(causas);

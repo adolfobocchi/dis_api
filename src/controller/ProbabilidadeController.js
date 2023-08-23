@@ -7,16 +7,16 @@ const ProbabilidadeController = {
       let probabilidades = null;
       if (ativo == 1 && page > 0) {
         probabilidades = await Probabilidade.find({ ativo: true })
-          .limit(page * 10)
-          .skip((page-1) * 10)
+          .limit(10)
+          .skip((page-1) * 10).sort({ nome: 1 })
       } else if (ativo == 0 && page > 0){
         probabilidades = await Probabilidade.find()
-        .limit(page * 10)
-        .skip((page-1) * 10)
+        .limit(10)
+        .skip((page-1) * 10).sort({ nome: 1 })
       } else if( ativo == 1 && page == 0) {
-        probabilidades = await Probabilidade.find({ ativo: true })
+        probabilidades = await Probabilidade.find({ ativo: true }).sort({ nome: 1 })
       } else if(ativo == 0 && page == 0) {
-        probabilidades = await Probabilidade.find()
+        probabilidades = await Probabilidade.find().sort({ nome: 1 })
       }
       res.status(200).json(probabilidades);
     } catch (error) {

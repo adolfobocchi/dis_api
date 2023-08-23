@@ -7,16 +7,16 @@ const MonitoramentoController = {
       let monitoramentos = null;
       if (ativo == 1 && page > 0) {
         monitoramentos = await Monitoramento.find({ ativo: true })
-          .limit(page * 10)
-          .skip((page-1) * 10)
+          .limit(10)
+          .skip((page-1) * 10).sort({ nome: 1 })
       } else if (ativo == 0 && page > 0){
         monitoramentos = await Monitoramento.find()
-        .limit(page * 10)
-        .skip((page-1) * 10)
+        .limit(10)
+        .skip((page-1) * 10).sort({ nome: 1 })
       } else if( ativo == 1 && page == 0) {
-        monitoramentos = await Monitoramento.find({ ativo: true })
+        monitoramentos = await Monitoramento.find({ ativo: true }).sort({ nome: 1 })
       } else if(ativo == 0 && page == 0) {
-        monitoramentos = await Monitoramento.find()
+        monitoramentos = await Monitoramento.find().sort({ nome: 1 })
       }
       res.status(200).json(monitoramentos);
     } catch (error) {
