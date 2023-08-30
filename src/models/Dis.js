@@ -20,12 +20,14 @@ const DISchema = new mongoose.Schema({
     ref: 'usuario',
     required: true,
   },
-  ambiente: String,
   observacaoAmbiente: String,
-  setores: [{
+  setores: [{setor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'setor',
     required: false,
+  },
+  descricao: {},
+  setorImg: String,
   }],
   funcoes: [{
     funcao: {
@@ -33,6 +35,8 @@ const DISchema = new mongoose.Schema({
       ref: 'funcao',
       required: false,
     },
+    quantidade: Number,
+    descricao: {},
     setor: String
   }],
   atividades: [{

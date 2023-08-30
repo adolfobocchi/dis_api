@@ -4,6 +4,7 @@ const FuncaoController = {
   async listar (req, res) {
     try {
       const {page, ativo} = req.params;
+      console.log(page,ativo)
       let funcoes = null;
       if (ativo == 1 && page > 0) {
         funcoes = await Funcao.find({ ativo: true })
