@@ -39,6 +39,7 @@ usuarioSchema.pre('save', async function (next) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(this.password, salt);
     this.password = hashedPassword;
+    this.nome = this.nome.charAt(0).toUpperCase() + this.nome.slice(1).toLowerCase();
     next();
   } catch (error) {
     next(error);

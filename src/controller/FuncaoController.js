@@ -34,6 +34,8 @@ const FuncaoController = {
       const novaFuncao = await Funcao.create({nome, descricao, ativo });
       res.status(201).json(novaFuncao);
     } catch (error) {
+      if(error.message.includes("E11000"))
+        res.status(400).json({ message: 'REGISTRO JÁ EXISTE! VERIFIQUE' });
       res.status(400).json({ message: error.message });
     }
   },
@@ -48,6 +50,7 @@ const FuncaoController = {
         res.status(404).json({ message: 'Funcao não encontrada' });
       }
     } catch (error) {
+      
       res.status(500).json({ message: error.message });
     }
   },
@@ -56,9 +59,12 @@ const FuncaoController = {
   async update(req, res) {
     try {
       const {nome, descricao,  ativo} = req.body;
-      const funcao = await Funcao.findByIdAndUpdate(req.params.id, {nome,descricao,  ativo},  { new: true });
+      console.log(req.params.id)
+      const funcao = await Funcao.findOneAndUpdate({_id: req.params.id}, req.body,  { new: true });
       res.status(201).json(funcao);
     } catch (error) {
+      if(error.message.includes("E11000"))
+        res.status(400).json({ message: 'REGISTRO JÁ EXISTE! VERIFIQUE' });
       res.status(400).json({ message: error.message });
     }
   },
