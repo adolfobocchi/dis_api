@@ -49,6 +49,7 @@ const EmpresaSchema = new mongoose.Schema({
       'mato grosso', 'mato grosso do sul', 'minas gerais', 'para', 'paraiba', 'parana', 'pernanbuco', 'piaui', 'rio de janeiro', 'rio grande do norte',
       'rio grande do sul', 'rondonia', 'roraima', 'santa catarina', 'são paulo', 'sergipe', 'tocantis',
     ],
+    default: 'são paulo',
     required: false
   },
   funcionarios: {
