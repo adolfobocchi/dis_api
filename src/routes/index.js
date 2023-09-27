@@ -18,6 +18,8 @@ const severidadeController = require('../controller/SeveridadeController');
 const nivelriscoController = require('../controller/NivelRiscoController');
 const planoAcaoController = require('../controller/PlanoAcaoController');
 const empresaController = require('../controller/EmpresaController');
+const grupoController = require('../controller/GrupoController');
+const videoController = require('../controller/VideoController');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -76,6 +78,12 @@ router.get('/setores/:id', setorController.show);
 router.post('/setores', usuarioController.private, setorController.criar);
 router.put('/setores/:id', usuarioController.private, setorController.update);
 router.delete('/setores/:id', usuarioController.private, setorController.delete);
+
+router.get('/videos/:page/:ativo', videoController.listar);
+router.get('/videos/:id', videoController.show);
+router.post('/videos', usuarioController.private,  upload.fields([{ name: 'videoFile' }]), videoController.criar);
+router.put('/videos/:id', usuarioController.private,  upload.fields([{ name: 'videoFile' }]), videoController.update);
+router.delete('/videos/:id', usuarioController.private, videoController.delete);
 
 router.get('/funcoes/:page/:ativo', funcaoController.listar);
 router.get('/funcoes/:id', funcaoController.show);
@@ -148,5 +156,33 @@ router.get('/empresas/:id', empresaController.show);
 router.post('/empresas', usuarioController.private, empresaController.criar);
 router.put('/empresas/:id', usuarioController.private, empresaController.update);
 router.delete('/empresas/:id', usuarioController.private, empresaController.delete);
+
+router.post('/empresas/comunicado/:id', usuarioController.private, empresaController.addComunicado);
+router.put('/empresas/comunicado/:id', usuarioController.private, empresaController.updateComunicado);
+router.delete('/empresas/:id/comunicado/:comunicadoId', usuarioController.private, empresaController.removeComunicado);
+
+router.post('/empresas/documento/:id', usuarioController.private, upload.fields([{ name: 'documentoFile' }]), empresaController.addDocumento);
+router.put('/empresas/documento/:id', usuarioController.private, upload.fields([{ name: 'documentoFile' }]), empresaController.updateDocumento);
+router.delete('/empresas/:id/documento/:documentoId/:documentoNome', usuarioController.private, empresaController.removeDocumento);
+
+router.post('/empresas/historicoacao/:id', usuarioController.private, empresaController.addHistoricoAcao);
+router.put('/empresas/historicoacao/:id', usuarioController.private, empresaController.updateHistoricoAcao);
+router.delete('/empresas/:id/historicoacao/:historicoAcaoId', usuarioController.private, empresaController.removeHistoricoAcao);
+
+router.post('/empresas/planoacao/:id', usuarioController.private, upload.fields([{ name: 'documentoFile' }]), empresaController.addPlanoAcao);
+router.put('/empresas/planoacao/:id', usuarioController.private, upload.fields([{ name: 'documentoFile' }]), empresaController.updatePlanoAcao);
+router.delete('/empresas/:id/planoacao/:planoAcaoId/:documentoNome', usuarioController.private, empresaController.removePlanoAcao);
+
+router.post('/empresas/solicitacao/:id', usuarioController.private, empresaController.addSolicitacao);
+router.put('/empresas/solicitacao/:id', usuarioController.private, empresaController.updateSolicitacao);
+router.delete('/empresas/:id/solicitacao/:solicitacaoId', usuarioController.private, empresaController.removeSolicitacao);
+
+
+
+router.get('/grupos/:page/:ativo', grupoController.listar);
+router.get('/grupos/:id', grupoController.show);
+router.post('/grupos', usuarioController.private, grupoController.criar);
+router.put('/grupos/:id', usuarioController.private, grupoController.update);
+router.delete('/grupos/:id', usuarioController.private, grupoController.delete);
 
 module.exports = router;
