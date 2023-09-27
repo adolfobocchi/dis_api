@@ -379,6 +379,7 @@ const EmpresaController = {
 
   async updateSolicitacao(req, res) {
     try {
+
       const { _id, codigo, responsavel, abertura, descricao, status, encerramento, usuario, respostas } = req.body;
   
       const empresaId = req.params.id; // Substitua pelo ID da sua empresa
@@ -390,14 +391,14 @@ const EmpresaController = {
         },
         {
           $set: {
-            'planoAcao.$.codigo': codigo,
-            'planoAcao.$.responsavel': responsavel,
-            'planoAcao.$.abertura': abertura,
-            'planoAcao.$.encerramento': encerramento,
-            'planoAcao.$.descricao': descricao,
-            'planoAcao.$.status': status,
-            'planoAcao.$.respostas': respostas, // Use o nome do arquivo salvo pelo Multer
-            'planoAcao.$.usuario': usuario,
+            'solicitacoes.$.codigo': codigo,
+            'solicitacoes.$.responsavel': responsavel,
+            'solicitacoes.$.abertura': abertura,
+            'solicitacoes.$.encerramento': encerramento,
+            'solicitacoes.$.descricao': descricao,
+            'solicitacoes.$.status': status,
+            'solicitacoes.$.respostas': respostas, // Use o nome do arquivo salvo pelo Multer
+            'solicitacoes.$.usuario': usuario,
           },
         },
         { new: true }
