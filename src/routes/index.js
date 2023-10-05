@@ -177,6 +177,10 @@ router.post('/empresas/solicitacao/:id', usuarioController.private, empresaContr
 router.put('/empresas/solicitacao/:id', usuarioController.private, empresaController.updateSolicitacao);
 router.delete('/empresas/:id/solicitacao/:solicitacaoId', usuarioController.private, empresaController.removeSolicitacao);
 
+router.post('/empresas/:id/solicitacao/:solicitacaoId/resposta', usuarioController.private, empresaController.addRespostaSolicitacao);
+router.put('/empresas/:id/solicitacao/:solicitacaoId/resposta/:respostaSolicitacaoId', usuarioController.private, empresaController.updateRespostaSolicitacao);
+router.delete('/empresas/:id/solicitacao/:solicitacaoId/resposta/:respostaSolicitacaoId', usuarioController.private, empresaController.removeRespostaSolicitacao);
+
 
 
 router.get('/grupos/:page/:ativo', grupoController.listar);

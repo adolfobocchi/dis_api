@@ -73,7 +73,7 @@ exports.createDIS = async (req, res) => {
       status
     })
     const dis = await DIS.findById(newDis._id)
-    .populate({path: 'empresa', populate: {path: 'area', model: 'area'}})
+    .populate({path: 'empresa', populate: [{path: 'area', model: 'area'}, {path: 'grupo', model: 'grupo'}]})
     .populate('usuario')  
     .populate('setores.setor')
     .populate('funcoes.funcao')
@@ -99,7 +99,7 @@ exports.getDISs = async (req, res) => {
   try {
     const {page, ativo} = req.params;
     let dis = await DIS.find()
-    .populate({path: 'empresa', populate: {path: 'area', model: 'area'}})
+    .populate({path: 'empresa', populate: [{path: 'area', model: 'area'}, {path: 'grupo', model: 'grupo'}]})
     .populate('usuario')  
     .populate('setores.setor')
     .populate('funcoes.funcao')
@@ -126,7 +126,7 @@ exports.getDISs = async (req, res) => {
 // Função para obter um DIS específico
 exports.getDIS = async (req, res) => {
   try {
-    const dis = await DIS.findById(req.params.id).populate({path: 'empresa', populate: {path: 'area', model: 'area'}})
+    const dis = await DIS.findById(req.params.id).populate({path: 'empresa', populate:[{path: 'area', model: 'area'}, {path: 'grupo', model: 'grupo'}]})
     .populate('usuario')  
     .populate('setores.setor')
     .populate('funcoes.funcao')
@@ -221,7 +221,7 @@ exports.updateDIS = async (req, res) => {
       monitoramentos,
       status
     }, { new: true })
-      .populate({path: 'empresa', populate: {path: 'area', model: 'area'}})
+      .populate({path: 'empresa', populate:[{path: 'area', model: 'area'}, {path: 'grupo', model: 'grupo'}]})
       .populate('usuario') 
       .populate('setores.setor') 
     .populate('funcoes.funcao')

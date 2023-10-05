@@ -161,9 +161,10 @@ const EmpresaSchema = new mongoose.Schema({
     },
     respostas: [
       {
-        responsavel: {
-          type: String,
-          required: false
+        usuario: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'usuario',
+          required: false,
         },
         data: {
           type: String,
@@ -225,6 +226,10 @@ const EmpresaSchema = new mongoose.Schema({
       required: false
     },
     documento: {
+      type: String,
+      required: false
+    },
+    validade: {
       type: String,
       required: false
     },
@@ -300,7 +305,7 @@ EmpresaSchema.pre('save', async function (next) {
 
 // EmpresaSchema.pre('findOneAndUpdate', async function (next) {
 //   try {
-    
+
 //     this._update.razaoSocial = this._update.razaoSocial?.trim().charAt(0).toUpperCase() + this._update.razaoSocial?.slice(1).toLowerCase();
 //     this._update.nomeFantasia = this._update.nomeFantasia?.trim().charAt(0).toUpperCase() + this._update.nomeFantasia?.slice(1).toLowerCase();
 //     this._update.endereco = this._update.endereco?.trim().charAt(0).toUpperCase() + this._update.endereco?.slice(1).toLowerCase();
@@ -308,7 +313,7 @@ EmpresaSchema.pre('save', async function (next) {
 //     this._update.cidade = this._update.cidade?.trim().charAt(0).toUpperCase() + this._update.cidade?.slice(1).toLowerCase();
 //     this._update.responsavel = this._update.responsavel?.trim().charAt(0).toUpperCase() + this._update.responsavel?.slice(1).toLowerCase();
 //     this._update.funcao = this._update.funcao?.trim().charAt(0).toUpperCase() + this._update.funcao?.slice(1).toLowerCase();
-    
+
 //     next();
 //   } catch (error) {
 //     next(error);

@@ -130,10 +130,10 @@ const EmpresaController = {
       return res.status(400).json({ message: error.message });
     }
   },
-  
+
   async addDocumento(req, res) {
     try {
-      const { codigo, data, descricao, observacao, ativo } = JSON.parse(req.body.documento);
+      const { codigo, data, descricao, validade, observacao, ativo } = JSON.parse(req.body.documento);
       if (req.files && Object.keys(req.files).length > 0) {
         var documento = req.files.documentoFile[0].filename;
       }
@@ -147,6 +147,7 @@ const EmpresaController = {
               data,
               descricao,
               observacao,
+              validade,
               documento, // Use o nome do arquivo salvo pelo Multer
               ativo,
             },
@@ -169,16 +170,16 @@ const EmpresaController = {
 
   async updateDocumento(req, res) {
     try {
-      const { _id, codigo, data, descricao, observacao, ativo } = JSON.parse(req.body.documento);
+      const { _id, codigo, data, descricao, validade, observacao, ativo } = JSON.parse(req.body.documento);
       if (req.files && Object.keys(req.files).length > 0) {
         var documento = req.files.documentoFile[0].filename;
       }
       console.log(observacao);
-  
+
       const empresaId = req.params.id; // Substitua pelo ID da sua empresa
-  
+
       const empresa = await Empresa.findOneAndUpdate(
-        { 
+        {
           _id: empresaId,
           'documentos._id': _id // Filtre pelo ID do documento que você deseja atualizar
         },
@@ -187,6 +188,7 @@ const EmpresaController = {
             'documentos.$.codigo': codigo,
             'documentos.$.data': data,
             'documentos.$.descricao': descricao,
+            'documentos.$.validade': validade,
             'documentos.$.observacao': observacao,
             'documentos.$.documento': documento, // Use o nome do arquivo salvo pelo Multer
             'documentos.$.ativo': ativo,
@@ -194,23 +196,23 @@ const EmpresaController = {
         },
         { new: true }
       )
-      .populate('area')
-      .populate('usuario')
-      .populate('grupo')
-      .populate('grupo.empresas')
-      .populate('tecnico');
-  
+        .populate('area')
+        .populate('usuario')
+        .populate('grupo')
+        .populate('grupo.empresas')
+        .populate('tecnico');
+
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
       return res.status(400).json({ message: error.message });
     }
   },
-  
+
 
   async removeDocumento(req, res) {
     try {
-        const empresa = await Empresa.findOneAndUpdate(
+      const empresa = await Empresa.findOneAndUpdate(
         { _id: req.params.id },
         {
           $pull: { documentos: { _id: req.params.documentoId } }
@@ -224,10 +226,10 @@ const EmpresaController = {
         .populate('tecnico')
 
       if (!empresa)
-        return res.status(400).json({ message: 'erro ao remover documento' });  
+        return res.status(400).json({ message: 'erro ao remover documento' });
       deleteImage(req.params.documentoNome)
-        // if(!deleteImage(req.params.documentoNome)  )
-        // return res.status(400).json({ message: 'erro ao remover arquivo documento' });  
+      // if(!deleteImage(req.params.documentoNome)  )
+      // return res.status(400).json({ message: 'erro ao remover arquivo documento' });  
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
@@ -279,11 +281,11 @@ const EmpresaController = {
       if (req.files && Object.keys(req.files).length > 0) {
         var documento = req.files.documentoFile[0].filename;
       }
-  
+
       const empresaId = req.params.id; // Substitua pelo ID da sua empresa
-  
+
       const empresa = await Empresa.findOneAndUpdate(
-        { 
+        {
           _id: empresaId,
           'planoAcao._id': _id // Filtre pelo ID do documento que você deseja atualizar
         },
@@ -301,23 +303,23 @@ const EmpresaController = {
         },
         { new: true }
       )
-      .populate('area')
-      .populate('usuario')
-      .populate('grupo')
-      .populate('grupo.empresas')
-      .populate('tecnico');
-  
+        .populate('area')
+        .populate('usuario')
+        .populate('grupo')
+        .populate('grupo.empresas')
+        .populate('tecnico');
+
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
       return res.status(400).json({ message: error.message });
     }
   },
-  
+
 
   async removePlanoAcao(req, res) {
     try {
-        const empresa = await Empresa.findOneAndUpdate(
+      const empresa = await Empresa.findOneAndUpdate(
         { _id: req.params.id },
         {
           $pull: { planoAcao: { _id: req.params.planoAcaoId } }
@@ -330,11 +332,6 @@ const EmpresaController = {
         .populate('grupo.empresas')
         .populate('tecnico')
 
-      if (!empresa)
-        return res.status(400).json({ message: 'erro ao remover documento' });  
-      deleteImage(req.params.documentoNome)
-        // if(!deleteImage(req.params.documentoNome)  )
-        // return res.status(400).json({ message: 'erro ao remover arquivo documento' });  
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
@@ -381,11 +378,11 @@ const EmpresaController = {
     try {
 
       const { _id, codigo, responsavel, abertura, descricao, status, encerramento, usuario, respostas } = req.body;
-  
+
       const empresaId = req.params.id; // Substitua pelo ID da sua empresa
-  
+
       const empresa = await Empresa.findOneAndUpdate(
-        { 
+        {
           _id: empresaId,
           'solicitacoes._id': _id // Filtre pelo ID do documento que você deseja atualizar
         },
@@ -403,23 +400,23 @@ const EmpresaController = {
         },
         { new: true }
       )
-      .populate('area')
-      .populate('usuario')
-      .populate('grupo')
-      .populate('grupo.empresas')
-      .populate('tecnico');
-  
+        .populate('area')
+        .populate('usuario')
+        .populate('grupo')
+        .populate('grupo.empresas')
+        .populate('tecnico');
+
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
       return res.status(400).json({ message: error.message });
     }
   },
-  
+
 
   async removeSolicitacao(req, res) {
     try {
-        const empresa = await Empresa.findOneAndUpdate(
+      const empresa = await Empresa.findOneAndUpdate(
         { _id: req.params.id },
         {
           $pull: { solicitacoes: { _id: req.params.solicitacaoId } }
@@ -432,17 +429,105 @@ const EmpresaController = {
         .populate('grupo.empresas')
         .populate('tecnico')
 
-      if (!empresa)
-        return res.status(400).json({ message: 'erro ao remover documento' });  
-      deleteImage(req.params.documentoNome)
-        // if(!deleteImage(req.params.documentoNome)  )
-        // return res.status(400).json({ message: 'erro ao remover arquivo documento' });  
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
       return res.status(400).json({ message: error.message });
     }
   },
+
+  async addRespostaSolicitacao(req, res) {
+    try {
+      const { data, descricao, usuario } = req.body
+      
+     
+      const empresa = await Empresa.findOneAndUpdate(
+        { _id: req.params.id, 'solicitacoes._id': req.params.solicitacaoId  },
+        {
+          $push: {
+            'solicitacoes.$.respostas': {
+              data,
+              descricao,
+              usuario,
+            },
+          },
+        },
+        {new: true}
+      )
+        .populate('area')
+        .populate('usuario')
+        .populate('grupo')
+        .populate('grupo.empresas')
+        .populate('tecnico')
+
+      return res.status(201).json(empresa);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ message: error.message });
+    }
+  },
+
+  async updateRespostaSolicitacao(req, res) {
+    try {
+      console.log(req.params.id)
+      console.log(req.params.solicitacaoId)
+      console.log(req.params.respostaSolicitacaoId)
+      console.log(req.body)
+
+      const { data, descricao, usuario } = req.body
+
+      const empresa = await Empresa.findOneAndUpdate(
+        { _id: req.params.id, 'solicitacoes._id': req.params.solicitacaoId  },
+        {
+          $set: {
+            [`solicitacoes.$.respostas.${req.params.respostaSolicitacaoId}`]: {
+              data,
+              descricao,
+              usuario
+            }
+          },
+        },
+      )
+        .populate('area')
+        .populate('usuario')
+        .populate('grupo')
+        .populate('grupo.empresas')
+        .populate('tecnico');
+
+      return res.status(201).json(empresa);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ message: error.message });
+    }
+  },
+
+
+  async removeRespostaSolicitacao(req, res) {
+    try {
+      console.log(req.params.id)
+      console.log(req.params.solicitacaoId)
+      console.log(req.params.respostaSolicitacaoId)
+      const empresa = await Empresa.updateOne(
+        { _id: req.params.id, 'solicitacoes._id': req.params.solicitacaoId, },
+        {
+          $pull: { 'solicitacoes.$.respostas': { _id: req.params.respostaSolicitacaoId } }
+        }
+      )
+        .populate('area')
+        .populate('usuario')
+        .populate('grupo')
+        .populate('grupo.empresas')
+        .populate('tecnico')
+
+      return res.status(201).json(empresa);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ message: error.message });
+    }
+  },
+
+
+
 
   async addComunicado(req, res) {
     try {
@@ -479,11 +564,11 @@ const EmpresaController = {
   async updateComunicado(req, res) {
     try {
       const { _id, data, descricao, aceite, aceiteID, usuario } = req.body;
-  
+
       const empresaId = req.params.id; // Substitua pelo ID da sua empresa
-  
+
       const empresa = await Empresa.findOneAndUpdate(
-        { 
+        {
           _id: empresaId,
           'comunicados._id': _id
         },
@@ -498,23 +583,23 @@ const EmpresaController = {
         },
         { new: true }
       )
-      .populate('area')
-      .populate('usuario')
-      .populate('grupo')
-      .populate('grupo.empresas')
-      .populate('tecnico');
-  
+        .populate('area')
+        .populate('usuario')
+        .populate('grupo')
+        .populate('grupo.empresas')
+        .populate('tecnico');
+
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
       return res.status(400).json({ message: error.message });
     }
   },
-  
+
 
   async removeComunicado(req, res) {
     try {
-        const empresa = await Empresa.findOneAndUpdate(
+      const empresa = await Empresa.findOneAndUpdate(
         { _id: req.params.id },
         {
           $pull: { comunicados: { _id: req.params.comunicadoId } }
@@ -571,11 +656,11 @@ const EmpresaController = {
   async updateHistoricoAcao(req, res) {
     try {
       const { _id, data, descricao, responsavel, etapa, usuario } = req.body;
-  
+
       const empresaId = req.params.id; // Substitua pelo ID da sua empresa
-  
+
       const empresa = await Empresa.findOneAndUpdate(
-        { 
+        {
           _id: empresaId,
           'historicoAcao._id': _id
         },
@@ -590,23 +675,23 @@ const EmpresaController = {
         },
         { new: true }
       )
-      .populate('area')
-      .populate('usuario')
-      .populate('grupo')
-      .populate('grupo.empresas')
-      .populate('tecnico');
-  
+        .populate('area')
+        .populate('usuario')
+        .populate('grupo')
+        .populate('grupo.empresas')
+        .populate('tecnico');
+
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
       return res.status(400).json({ message: error.message });
     }
   },
-  
+
 
   async removeHistoricoAcao(req, res) {
     try {
-        const empresa = await Empresa.findOneAndUpdate(
+      const empresa = await Empresa.findOneAndUpdate(
         { _id: req.params.id },
         {
           $pull: { historicoAcao: { _id: req.params.historicoAcaoId } }
