@@ -110,7 +110,6 @@ const EmpresaController = {
   // Atualizar uma empresa existente
   async update(req, res) {
     try {
-      console.log(req.body);
       const empresa = await Empresa.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
         .populate('area')
         .populate('usuario')

@@ -181,12 +181,15 @@ router.post('/empresas/:id/solicitacao/:solicitacaoId/resposta', usuarioControll
 router.put('/empresas/:id/solicitacao/:solicitacaoId/resposta/:respostaSolicitacaoId', usuarioController.private, empresaController.updateRespostaSolicitacao);
 router.delete('/empresas/:id/solicitacao/:solicitacaoId/resposta/:respostaSolicitacaoId', usuarioController.private, empresaController.removeRespostaSolicitacao);
 
-
-
 router.get('/grupos/:page/:ativo', grupoController.listar);
 router.get('/grupos/:id', grupoController.show);
 router.post('/grupos', usuarioController.private, grupoController.criar);
 router.put('/grupos/:id', usuarioController.private, grupoController.update);
 router.delete('/grupos/:id', usuarioController.private, grupoController.delete);
+
+// Rota para fazer login
+router.post('/areadocliente/login', grupoController.login);
+
+router.post('/areadocliente/logout', grupoController.logout);
 
 module.exports = router;

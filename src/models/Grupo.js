@@ -15,6 +15,10 @@ const grupoSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  responsavel: {
+    type: String,
+    required: true,
+  },
   usuario: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'usuario',
@@ -44,6 +48,21 @@ grupoSchema.pre('save', async function (next) {
     next(error);
   }
 });
+
+grupoSchema.pre('findOneAndUpdate', async function (next) {
+  try {
+    if(this._update.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(this._update.password, salt);
+      this._update.password = hashedPassword;
+      this._update.nome = this._update.nome.charAt(0).toUpperCase() + this._update.nome.slice(1).toLowerCase();
+      next();
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+  //   try {
 
 const modelName = 'grupo';
 

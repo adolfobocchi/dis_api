@@ -1,7 +1,49 @@
 require('dotenv').config();
 const Grupo = require('../models/Grupo');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const GrupoController = {
+  async login (req, res) {
+    try {
+      const { email, password } = req.body;
+      // Verificar se o usuário existe
+      const usuarioFind = await Grupo.findOne({ email });;
+      if (!usuarioFind) {
+        return res.status(401).json({ message: 'Credenciais inválidas.' });
+      }
+
+      // Verificar a senha
+      const isPasswordValid = await bcrypt.compare(password, usuarioFind.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: 'Credenciais inválidas.' });
+      }
+
+      // Gerar token de autenticação
+      const token = jwt.sign({ usuarioId: usuarioFind._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const grupo = await Grupo.findByIdAndUpdate(usuarioFind.id, {token: token}).populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
+
+      return res.status(200).json({ grupo, token });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  },
+
+  async logout (req, res) {
+    try {
+      const { id } = req.body;
+      // Verificar se o usuário existe
+      const usuario = await Grupo.findByIdAndUpdate({_id: id}, { token: '' });
+      
+      if (!usuario) {
+        return res.status(401).json({ message: 'Credenciais inválidas.' });
+      }
+      return res.status(200).json({ message: 'Logout realizado com Sucesso!' });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  },
+
   async criar(req, res) {
     try {
       const novaGrupo = await Grupo.create(req.body);
@@ -65,7 +107,8 @@ const GrupoController = {
   async update(req, res) {
     try {
       const grupo = await Grupo.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
-        .populate('empresas')
+        .populate('empresas').select(['-password', '-token']);
+        console.log(grupo);
       return res.status(201).json(grupo);
     } catch (error) {
       return res.status(400).json({ message: error.message });
