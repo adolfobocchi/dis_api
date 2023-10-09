@@ -169,7 +169,7 @@ const EmpresaController = {
 
   async updateDocumento(req, res) {
     try {
-      const { _id, codigo, data, descricao, validade, observacao, ativo } = JSON.parse(req.body.documento);
+      const { _id, codigo, data, dataDownload, descricao, validade, observacao, ativo } = JSON.parse(req.body.documento);
       if (req.files && Object.keys(req.files).length > 0) {
         var documento = req.files.documentoFile[0].filename;
       }
@@ -186,6 +186,7 @@ const EmpresaController = {
           $set: {
             'documentos.$.codigo': codigo,
             'documentos.$.data': data,
+            'documentos.$.dataDownload': dataDownload,
             'documentos.$.descricao': descricao,
             'documentos.$.validade': validade,
             'documentos.$.observacao': observacao,

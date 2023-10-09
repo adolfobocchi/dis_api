@@ -102,6 +102,22 @@ const EmpresaSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  etapas: {
+    type: String,
+    required: false
+  },
+  etapaAtual: {
+    type: String,
+    required: false
+  },
+  planoAcaoDesenvolvido: {
+    type: String,
+    required: false
+  },
+  logo: {
+    type: String,
+    required: false
+  },
   comunicados: [{
     descricao: {
       type: String,
