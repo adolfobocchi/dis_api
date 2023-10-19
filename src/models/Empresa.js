@@ -4,15 +4,16 @@ const moment = require('moment');
 const EmpresaSchema = new mongoose.Schema({
   razaoSocial: {
     type: String,
-    required: true
+    required: true,
   },
   nomeFantasia: {
     type: String,
-    required: true
+    required: true,
   },
   cnpj: {
     type: String,
-    required: false
+    required: false,
+    unique: true
   },
   cnae: {
     type: String,
@@ -26,8 +27,8 @@ const EmpresaSchema = new mongoose.Schema({
     required: false
   },
   numero: {
-    type: Number,
-    default: 0,
+    type: String,
+    default: '0',
     required: false
   },
   cep: {
@@ -57,10 +58,22 @@ const EmpresaSchema = new mongoose.Schema({
     default: 0,
     required: false
   },
-  responsavel: String,
-  funcao: String,
-  telefone: String,
-  email: String,
+  responsavel: {
+    type: String,
+    default: '',
+  },
+  funcao: {
+    type: String,
+    default: '',
+  },
+  telefone: {
+    type: String,
+    default: '',
+  },
+  email: {
+    type: String,
+    default: '',
+  },
   grupo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'grupo',
@@ -303,13 +316,13 @@ const EmpresaSchema = new mongoose.Schema({
 EmpresaSchema.pre('save', async function (next) {
   try {
     this.inclusao = moment().format('DD/MM/YYYY hh:mm:ss');
-    this.razaoSocial = this.razaoSocial?.trim().charAt(0).toUpperCase() + this.razaoSocial?.slice(1).toLowerCase();
-    this.nomeFantasia = this.nomeFantasia?.trim().charAt(0).toUpperCase() + this.nomeFantasia?.slice(1).toLowerCase();
-    this.endereco = this.endereco?.trim().charAt(0).toUpperCase() + this.endereco?.slice(1).toLowerCase();
-    this.bairro = this.bairro?.trim().charAt(0).toUpperCase() + this.bairro?.slice(1).toLowerCase();
-    this.cidade = this.cidade?.trim().charAt(0).toUpperCase() + this.cidade?.slice(1).toLowerCase();
-    this.responsavel = this.responsavel?.trim().charAt(0).toUpperCase() + this.responsavel?.slice(1).toLowerCase();
-    this.funcao = this.funcao?.trim().charAt(0).toUpperCase() + this.funcao?.slice(1).toLowerCase();
+    // this.razaoSocial = this.razaoSocial?.trim().charAt(0).toUpperCase() + this.razaoSocial?.slice(1).toLowerCase();
+    // this.nomeFantasia = this.nomeFantasia?.trim().charAt(0).toUpperCase() + this.nomeFantasia?.slice(1).toLowerCase();
+    // this.endereco = this.endereco?.trim().charAt(0).toUpperCase() + this.endereco?.slice(1).toLowerCase();
+    // this.bairro = this.bairro?.trim().charAt(0).toUpperCase() + this.bairro?.slice(1).toLowerCase();
+    // this.cidade = this.cidade?.trim().charAt(0).toUpperCase() + this.cidade?.slice(1).toLowerCase();
+    // this.responsavel = this.responsavel?.trim().charAt(0).toUpperCase() + this.responsavel?.slice(1).toLowerCase();
+    // this.funcao = this.funcao?.trim().charAt(0).toUpperCase() + this.funcao?.slice(1).toLowerCase();
     next();
   } catch (error) {
     console.log('error: ', error)

@@ -18,11 +18,10 @@ const GrupoController = {
       if (!isPasswordValid) {
         return res.status(401).json({ message: 'Credenciais inválidas.' });
       }
-
       // Gerar token de autenticação
       const token = jwt.sign({ usuarioId: usuarioFind._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      const grupo = await Grupo.findByIdAndUpdate(usuarioFind.id, {token: token}).populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
-
+      const grupo = await Grupo.findByIdAndUpdate(usuarioFind._id, {token: token}).populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
+      
       return res.status(200).json({ grupo, token });
     } catch (error) {
       return res.status(500).json({ error: error.message });
@@ -92,7 +91,7 @@ const GrupoController = {
   // Buscar uma grupo pelo ID
   async show(req, res) {
     try {
-      const grupo = await Grupo.findById(req.params.id).populate('empresas')
+      const grupo = await Grupo.findById(req.params.id).populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
       if (grupo) {
         return res.status(201).json(grupo);
       } else {
@@ -108,7 +107,7 @@ const GrupoController = {
     try {
       const grupo = await Grupo.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
         .populate('empresas').select(['-password', '-token']);
-        console.log(grupo);
+        
       return res.status(201).json(grupo);
     } catch (error) {
       return res.status(400).json({ message: error.message });

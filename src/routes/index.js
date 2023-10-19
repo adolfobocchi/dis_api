@@ -181,6 +181,8 @@ router.post('/empresas/:id/solicitacao/:solicitacaoId/resposta', usuarioControll
 router.put('/empresas/:id/solicitacao/:solicitacaoId/resposta/:respostaSolicitacaoId', usuarioController.private, empresaController.updateRespostaSolicitacao);
 router.delete('/empresas/:id/solicitacao/:solicitacaoId/resposta/:respostaSolicitacaoId', usuarioController.private, empresaController.removeRespostaSolicitacao);
 
+router.post('/empresas/importacao', usuarioController.private, empresaController.importacao);
+
 router.get('/grupos/:page/:ativo', grupoController.listar);
 router.get('/grupos/:id', grupoController.show);
 router.post('/grupos', usuarioController.private, grupoController.criar);

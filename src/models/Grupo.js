@@ -1,28 +1,31 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const moment = require('moment');
+
 const grupoSchema = new mongoose.Schema({
   nome: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
   },
   email: {
     type: String,
-    required: true,
-    unique: true
+    required: false,
+    unique: false
   },
   password: {
     type: String,
-    required: true
+    required: false
   },
   responsavel: {
     type: String,
-    required: true,
+    required: false,
   },
   usuario: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'usuario',
-    required: true,
+    required: false,
   },
   ativo: {
     type: Boolean,
@@ -33,16 +36,22 @@ const grupoSchema = new mongoose.Schema({
     ref: 'empresa',
     required: false,
   }],
+  inclusao: {
+    type: String,
+  },
   token:String
 });
 
 // Pré-save hook para gerar o hash da senha antes de salvar o usuário
 grupoSchema.pre('save', async function (next) {
   try {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(this.password, salt);
-    this.password = hashedPassword;
-    this.nome = this.nome.charAt(0).toUpperCase() + this.nome.slice(1).toLowerCase();
+    if(this.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(this.password, salt);
+      this.password = hashedPassword;
+      // this.nome = this.nome.charAt(0).toUpperCase() + this.nome.slice(1).toLowerCase();
+    }
+    this.inclusao = moment().format('DD/MM/YYYY hh:mm:ss');
     next();
   } catch (error) {
     next(error);
@@ -51,6 +60,7 @@ grupoSchema.pre('save', async function (next) {
 
 grupoSchema.pre('findOneAndUpdate', async function (next) {
   try {
+    console.log(this._update.password);
     if(this._update.password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(this._update.password, salt);
