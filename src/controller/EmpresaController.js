@@ -44,47 +44,47 @@ const EmpresaController = {
       // // await Grupo.deleteMany({ empresas: { $size: 0 } });
       // res.status(201).json();
       
-      let grupoExist = null;
-      let areaExist = null;
-      const { grupo, razaoSocial, nomeFantasia, cnpj, cnae, area, endereco, numero, bairro, cep, estado, cidade} = req.body;
-      const grupoFind = await Grupo.findOne({nome: grupo});
-      console.log('Valor de grupo:', grupo);
-      console.log('Resultado da consulta:', grupoFind);
-      // res.status(201).json();
-      if(!grupoFind) {
-        grupoExist = await Grupo.create({nome: grupo})
-      } else {
-        grupoExist = grupoFind
-      }
-      const areaFind = await Area.findOne({nome: area});
+      // let grupoExist = null;
+      // let areaExist = null;
+      // const { grupo, razaoSocial, nomeFantasia, cnpj, cnae, area, endereco, numero, bairro, cep, estado, cidade} = req.body;
+      // const grupoFind = await Grupo.findOne({nome: grupo});
+      // console.log('Valor de grupo:', grupo);
+      // console.log('Resultado da consulta:', grupoFind);
+      // // res.status(201).json();
+      // if(!grupoFind) {
+      //   grupoExist = await Grupo.create({nome: grupo})
+      // } else {
+      //   grupoExist = grupoFind
+      // }
+      // const areaFind = await Area.findOne({nome: area});
       
-      if(!areaFind) {
-        areaExist = await Area.create({nome: area})
-      } else {
-        areaExist = areaFind;
-      }
-      const novaEmpresa = await Empresa.create({
-         grupo: grupoExist,
-         area: areaExist,
-         razaoSocial,
-         nomeFantasia,
-         cnpj,
-         cnae,
-         endereco,
-         numero,
-         bairro,
-         cep,
-         estado,
-         cidade
-      });
-      const grupoUpdate = await Grupo.findById(novaEmpresa.grupo._id).select(['-password', '-token']);;
-      if (grupoUpdate) {
-        if (!grupoUpdate.empresas.includes(novaEmpresa._id)) {
-          grupoUpdate.empresas.push(novaEmpresa._id)
-          await Grupo.findOneAndUpdate({ _id: grupoUpdate._id }, grupoUpdate, { new: true })
-        }
-      }
-      res.status(201).json(novaEmpresa);
+      // if(!areaFind) {
+      //   areaExist = await Area.create({nome: area})
+      // } else {
+      //   areaExist = areaFind;
+      // }
+      // const novaEmpresa = await Empresa.create({
+      //    grupo: grupoExist,
+      //    area: areaExist,
+      //    razaoSocial,
+      //    nomeFantasia,
+      //    cnpj,
+      //    cnae,
+      //    endereco,
+      //    numero,
+      //    bairro,
+      //    cep,
+      //    estado,
+      //    cidade
+      // });
+      // const grupoUpdate = await Grupo.findById(novaEmpresa.grupo._id).select(['-password', '-token']);;
+      // if (grupoUpdate) {
+      //   if (!grupoUpdate.empresas.includes(novaEmpresa._id)) {
+      //     grupoUpdate.empresas.push(novaEmpresa._id)
+      //     await Grupo.findOneAndUpdate({ _id: grupoUpdate._id }, grupoUpdate, { new: true })
+      //   }
+      // }
+      // res.status(201).json(novaEmpresa);
     } catch (error) {
       console.log('Error: ' + error)
       res.status(400).json({ message: error });
@@ -126,7 +126,7 @@ const EmpresaController = {
           .populate('usuario')
           .populate('grupo')
           .populate('grupo.empresas')
-          .populate('tecnico').sort({ nome: 1 })
+          .populate('tecnico').sort({ nomeFantasia: 1 })
 
       } else if (ativo == 0 && page > 0) {
         empresas = await Empresa.find()
@@ -136,7 +136,7 @@ const EmpresaController = {
           .populate('usuario')
           .populate('grupo')
           .populate('grupo.empresas')
-          .populate('tecnico').sort({ nome: 1 })
+          .populate('tecnico').sort({ nomeFantasia: 1 })
 
       } else if (ativo == 1 && page == 0) {
         empresas = await Empresa.find({ ativo: true })
@@ -144,7 +144,7 @@ const EmpresaController = {
           .populate('usuario')
           .populate('grupo')
           .populate('grupo.empresas')
-          .populate('tecnico').sort({ nome: 1 })
+          .populate('tecnico').sort({ nomeFantasia: 1 })
 
       } else if (ativo == 0 && page == 0) {
         empresas = await Empresa.find()
@@ -152,7 +152,7 @@ const EmpresaController = {
           .populate('usuario')
           .populate('grupo')
           .populate('grupo.empresas')
-          .populate('tecnico').sort({ nome: 1 })
+          .populate('tecnico').sort({ nomeFantasia: 1 })
 
       }
       return res.status(200).json(empresas);
