@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const GrupoController = {
-  async login (req, res) {
+  async login(req, res) {
     try {
       const { email, password } = req.body;
       // Verificar se o usuário existe
@@ -20,20 +20,20 @@ const GrupoController = {
       }
       // Gerar token de autenticação
       const token = jwt.sign({ usuarioId: usuarioFind._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      const grupo = await Grupo.findByIdAndUpdate(usuarioFind._id, {token: token}).populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
-      
+      const grupo = await Grupo.findByIdAndUpdate(usuarioFind._id, { token: token }).populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
+
       return res.status(200).json({ grupo, token });
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
   },
 
-  async logout (req, res) {
+  async logout(req, res) {
     try {
       const { id } = req.body;
       // Verificar se o usuário existe
-      const usuario = await Grupo.findByIdAndUpdate({_id: id}, { token: '' });
-      
+      const usuario = await Grupo.findByIdAndUpdate({ _id: id }, { token: '' });
+
       if (!usuario) {
         return res.status(401).json({ message: 'Credenciais inválidas.' });
       }
@@ -88,6 +88,23 @@ const GrupoController = {
     }
   },
 
+  async search(req, res) {
+    const { nome } = req.query;
+    try {
+      let query = {};
+      console.log(nome)
+      if (nome) {
+        query.nome = { $regex: nome, $options: 'i' }; // Pesquisa com correspondência parcial e insensível a maiúsculas/minúsculas
+      }
+      const grupos = await Grupo.find(query)
+        .populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
+
+      return res.status(200).json(grupos);
+    } catch (error) {
+      return res.status(500).json({ error: 'Erro na pesquisa de empresas.' });
+    }
+  },
+
   // Buscar uma grupo pelo ID
   async show(req, res) {
     try {
@@ -107,7 +124,7 @@ const GrupoController = {
     try {
       const grupo = await Grupo.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
         .populate('empresas').select(['-password', '-token']);
-        
+
       return res.status(201).json(grupo);
     } catch (error) {
       return res.status(400).json({ message: error.message });

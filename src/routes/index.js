@@ -152,6 +152,7 @@ router.put('/planosacao/:id', usuarioController.private, planoAcaoController.upd
 router.delete('/planosacao/:id', usuarioController.private, planoAcaoController.delete);
 
 router.get('/empresas/:page/:ativo', empresaController.listar);
+router.get('/empresas/search', empresaController.search);
 router.get('/empresas/:id', empresaController.show);
 router.post('/empresas', usuarioController.private, empresaController.criar);
 router.put('/empresas/:id', usuarioController.private, empresaController.update);
@@ -184,6 +185,7 @@ router.delete('/empresas/:id/solicitacao/:solicitacaoId/resposta/:respostaSolici
 router.post('/empresas/importacao', usuarioController.private, empresaController.importacao);
 
 router.get('/grupos/:page/:ativo', grupoController.listar);
+router.get('/grupos/search', grupoController.search);
 router.get('/grupos/:id', grupoController.show);
 router.post('/grupos', usuarioController.private, grupoController.criar);
 router.put('/grupos/:id', usuarioController.private, grupoController.update);

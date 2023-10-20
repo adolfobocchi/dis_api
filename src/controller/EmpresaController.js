@@ -161,6 +161,34 @@ const EmpresaController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  
+
+  async search(req, res) {
+    const { nomeFantasia, cnpj } = req.query;
+
+    try {
+      let query = {};
+
+      if (nomeFantasia) {
+        query.nomeFantasia = { $regex: nomeFantasia, $options: 'i' }; // Pesquisa com correspondência parcial e insensível a maiúsculas/minúsculas
+      }
+
+      if (cnpj) {
+        query.cnpj = { $regex: cnpj, $options: 'i' };
+      }
+
+      const empresas = await Empresa.find(query)
+          .populate('area')
+          .populate('usuario')
+          .populate('grupo')
+          .populate('grupo.empresas')
+          .populate('tecnico').sort({ nomeFantasia: 1 });
+
+      return res.status(200).json(empresas);
+    } catch (error) {
+      return res.status(500).json({ error: 'Erro na pesquisa de empresas.' });
+    }
+  },
 
 
   // Buscar uma empresa pelo ID
