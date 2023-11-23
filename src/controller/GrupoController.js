@@ -2,41 +2,50 @@ require('dotenv').config();
 const Grupo = require('../models/Grupo');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Logs = require('../models/Logs');
+const moment = require('moment');
 
 const GrupoController = {
   async login(req, res) {
     try {
+      const data = moment().format('DD/MM/YYYY hh:mm:ss')
       const { email, password } = req.body;
       // Verificar se o usuário existe
       const usuarioFind = await Grupo.findOne({ email });;
       if (!usuarioFind) {
+        Logs.create({texto: `Data: ${data} - Login - Credenciais inválidas para ${email}`})
         return res.status(401).json({ message: 'Credenciais inválidas.' });
       }
 
       // Verificar a senha
       const isPasswordValid = await bcrypt.compare(password, usuarioFind.password);
       if (!isPasswordValid) {
+        Logs.create({texto: `Data: ${data} - Login - Credenciais inválidas para ${email}`})
         return res.status(401).json({ message: 'Credenciais inválidas.' });
       }
       // Gerar token de autenticação
       const token = jwt.sign({ usuarioId: usuarioFind._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
       const grupo = await Grupo.findByIdAndUpdate(usuarioFind._id, { token: token }).populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
-
+      Logs.create({texto: `Data: ${data} - Login - realizado com sucesso para ${email}`})
       return res.status(200).json({ grupo, token });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ error: error.message });
     }
   },
 
   async logout(req, res) {
     try {
+      const data = moment().format('DD/MM/YYYY hh:mm:ss')
       const { id } = req.body;
       // Verificar se o usuário existe
-      const usuario = await Grupo.findByIdAndUpdate({ _id: id }, { token: '' });
+      const grupo = await Grupo.findByIdAndUpdate({ _id: id }, { token: '' });
 
-      if (!usuario) {
+      if (!grupo) {
+        Logs.create({texto: `Data: ${data} - Logout - credenciais invalidas para ${grupo.email}`})
         return res.status(401).json({ message: 'Credenciais inválidas.' });
       }
+      Logs.create({texto: `Data: ${data} - Logout - realizado com sucesso para ${grupo.email}`})
       return res.status(200).json({ message: 'Logout realizado com Sucesso!' });
     } catch (error) {
       return res.status(500).json({ error: error.message });
@@ -73,10 +82,12 @@ const GrupoController = {
           .populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
 
       } else if (ativo == 1 && page == 0) {
+        
         grupos = await Grupo.find({ ativo: true })
           .populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
 
       } else if (ativo == 0 && page == 0) {
+        
         grupos = await Grupo.find()
           .populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
 

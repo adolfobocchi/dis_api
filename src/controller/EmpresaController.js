@@ -3,7 +3,8 @@ const fs = require('fs');
 const Empresa = require('../models/Empresa');
 const Grupo = require('../models/Grupo');
 const NumeroAleatorio = require('../models/NumeroAleatorio');
-const Area = require('../models/Area');
+const SendEmail = require('../utils/SendEmail');
+const moment = require('moment');
 
 function gerarNumeroAleatorio() {
   return Math.floor(1000000 + Math.random() * 9000000);
@@ -272,6 +273,14 @@ const EmpresaController = {
         .populate('grupo.empresas')
         .populate('tecnico')
 
+        if(empresa.grupo.email) {
+          await SendEmail.sendEmail(
+            empresa.grupo.email,
+            'Documento', 
+            `Olá ${empresa.grupo.nome} <br> <u>Data do documento:</u> ${data} <br> <u>Descrição: </u>${descricao}<br> <u>Validade: </u>${validade}`)
+        }
+        
+
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
@@ -285,7 +294,6 @@ const EmpresaController = {
       if (req.files && Object.keys(req.files).length > 0) {
         var documento = req.files.documentoFile[0].filename;
       }
-      console.log(observacao);
 
       const empresaId = req.params.id; // Substitua pelo ID da sua empresa
 
@@ -313,7 +321,12 @@ const EmpresaController = {
         .populate('grupo')
         .populate('grupo.empresas')
         .populate('tecnico');
-
+        if(empresa.grupo.email) {
+          await SendEmail.sendEmail(
+            empresa.grupo.email,
+            'Documento', 
+            `Olá ${empresa.grupo.nome} <br> <u>Data do documento:</u> ${data} <br> <u>Descrição: </u>${descricao}<br> <u>Validade: </u>${validade}`)
+        }
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
@@ -451,6 +464,35 @@ const EmpresaController = {
     }
   },
 
+  async listarSolicitacao (req, res) {
+    try {
+      // Consulta para listar todas as solicitações de todas as empresas
+      var solicitacoes = await Empresa.aggregate([
+        { $unwind: '$solicitacoes' }, // "Desdobra" a matriz de solicitações em documentos separados
+        { $sort: { 'solicitacoes.abertura': -1 } }, // Ordena por data de abertura em ordem decrescente (do mais novo para o mais antigo)
+        {
+          $project: {
+            empresaId: '$_id',
+            grupo: '$grupo',
+            nomeFantasia: '$nomeFantasia',
+            solicitacao: '$solicitacoes',
+          },
+        },
+      ]);
+      var solicitacoesPopuladas = await Grupo.populate(solicitacoes, {path: "grupo"});
+      var solicitacoesPopuladas = await Empresa.populate(solicitacoes, {path: "grupo.empresas"})
+      // const grupoIds = solicitacoes.map((solicitacao) => solicitacao.grupo);
+      // // Use a função populate para obter os detalhes dos grupos
+      // const solicitacoesPopuladas = await Grupo.find({ _id: { $in: grupoIds } }).populate('empresas');
+      //console.log(solicitacoesPopuladas);
+      // console.log(solicitacoes);
+      return res.status(201).json(solicitacoesPopuladas);
+    } catch (error) {
+      console.error('Erro ao listar as solicitações:', error);
+      return res.status(400).json({ message: error.message });
+    }
+  },
+
   async addSolicitacao(req, res) {
     try {
       let codigo = 0;
@@ -488,6 +530,13 @@ const EmpresaController = {
         .populate('grupo')
         .populate('grupo.empresas')
         .populate('tecnico')
+
+        if(empresa.grupo.email) {
+          await SendEmail.sendEmail(
+            empresa.grupo.email,
+            'Solicitação', 
+            `Olá ${empresa.grupo.nome} <br> <u>Data da solicitação:</u> ${abertura} <br> <u>Descrição: </u>${descricao}<br> <u>Responsavel: </u>${responsavel}`)
+        }
 
       return res.status(201).json(empresa);
     } catch (error) {
@@ -539,6 +588,13 @@ const EmpresaController = {
         .populate('grupo.empresas')
         .populate('tecnico');
 
+        if(empresa.grupo.email) {
+          await SendEmail.sendEmail(
+            empresa.grupo.email,
+            'Solicitação', 
+            `Olá ${empresa.grupo.nome} <br> <u>Data da solicitação:</u> ${abertura} <br> <u>Descrição: </u>${descricao}<br> <u>Responsavel: </u>${usuario}`)
+        }
+
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
@@ -571,9 +627,9 @@ const EmpresaController = {
 
   async addRespostaSolicitacao(req, res) {
     try {
-      const { data, descricao, usuario } = req.body
+      const { data, descricao, usuario, encerrar } = req.body
       
-     
+      console.log('print: ' + usuario);
       const empresa = await Empresa.findOneAndUpdate(
         { _id: req.params.id, 'solicitacoes._id': req.params.solicitacaoId  },
         {
@@ -586,14 +642,33 @@ const EmpresaController = {
           },
         },
         {new: true}
-      )
-        .populate('area')
-        .populate('usuario')
-        .populate('grupo')
-        .populate('grupo.empresas')
-        .populate('tecnico')
-
-      return res.status(201).json(empresa);
+      ).populate('grupo')
+      
+      
+      if(!empresa)
+        return res.status(400).json({ message: "erro ao adicionar resposta" });
+      //console.log(encerrar);
+      if(encerrar) {
+        await Empresa.findOneAndUpdate(
+          { _id: req.params.id, 'solicitacoes._id': req.params.solicitacaoId  },
+          {
+            $set: {
+              'solicitacoes.$.encerramento': data.slice(0, 10),
+              'solicitacoes.$.status': 'encerrada',
+            },
+          },
+          {new: true})
+      }
+      
+      const solicitacao = await Empresa.findOne({ _id: req.params.id, 'solicitacoes._id': req.params.solicitacaoId  }, { 'solicitacoes.$': 1 })
+      console.log(solicitacao);
+      if(empresa.grupo.email) {
+        await SendEmail.sendEmail(
+          empresa.grupo.email,
+          'Andamento de Solicitação', 
+          `Olá ${empresa.grupo.nome} <br> <u>Data da solicitação:</u> ${solicitacao.solicitacoes[0].abertura} <br> <u>Descrição da solicitação: </u>${solicitacao.solicitacoes[0].descricao}<br> <u>Data da resposta: </u>${data}<br> <u>Resposta: </u>${descricao}`)
+      }
+      return res.status(201).json(solicitacao);
     } catch (error) {
       console.log(error);
       return res.status(400).json({ message: error.message });
@@ -602,10 +677,6 @@ const EmpresaController = {
 
   async updateRespostaSolicitacao(req, res) {
     try {
-      console.log(req.params.id)
-      console.log(req.params.solicitacaoId)
-      console.log(req.params.respostaSolicitacaoId)
-      console.log(req.body)
 
       const { data, descricao, usuario } = req.body
 
@@ -621,13 +692,13 @@ const EmpresaController = {
           },
         },
       )
-        .populate('area')
-        .populate('usuario')
-        .populate('grupo')
-        .populate('grupo.empresas')
-        .populate('tecnico');
 
-      return res.status(201).json(empresa);
+      if(!empresa)
+        return res.status(400).json({ message: "erro ao adicionar resposta" });
+      
+        const solicitacao = await Empresa.findOne({ _id: req.params.id, 'solicitacoes._id': req.params.solicitacaoId  }, { 'solicitacoes.$': 1 })
+
+      return res.status(201).json(solicitacao);
     } catch (error) {
       console.log(error);
       return res.status(400).json({ message: error.message });
@@ -637,22 +708,19 @@ const EmpresaController = {
 
   async removeRespostaSolicitacao(req, res) {
     try {
-      console.log(req.params.id)
-      console.log(req.params.solicitacaoId)
-      console.log(req.params.respostaSolicitacaoId)
       const empresa = await Empresa.findOneAndUpdate(
         { _id: req.params.id, 'solicitacoes._id': req.params.solicitacaoId, },
         {
           $pull: { 'solicitacoes.$.respostas': { _id: req.params.respostaSolicitacaoId } }
         }
       )
-        .populate('area')
-        .populate('usuario')
-        .populate('grupo')
-        .populate('grupo.empresas')
-        .populate('tecnico')
 
-      return res.status(201).json(empresa);
+      if(!empresa)
+        return res.status(400).json({ message: "erro ao adicionar resposta" });
+      
+        const solicitacao = await Empresa.findOne({ _id: req.params.id, 'solicitacoes._id': req.params.solicitacaoId  }, { 'solicitacoes.$': 1 })
+
+      return res.status(201).json(solicitacao);
     } catch (error) {
       console.log(error);
       return res.status(400).json({ message: error.message });
@@ -686,6 +754,14 @@ const EmpresaController = {
         .populate('grupo')
         .populate('grupo.empresas')
         .populate('tecnico')
+
+        if(empresa.grupo.email) {
+          await SendEmail.sendEmail(
+            empresa.grupo.email,
+            'Comunicado', 
+            `Olá ${empresa.grupo.nome} <br> <u>Data do comunicado:</u> ${data} <br> <u>Comunicado: </u>${descricao}`)
+        }
+        
 
       return res.status(201).json(empresa);
     } catch (error) {
@@ -721,7 +797,13 @@ const EmpresaController = {
         .populate('grupo')
         .populate('grupo.empresas')
         .populate('tecnico');
-
+        if(empresa.grupo.email) {
+          await SendEmail.sendEmail(
+            empresa.grupo.email,
+            'Comunicado', 
+            `Olá ${empresa.grupo.nome} <br> <u>Data do comunicado:</u> ${data} <br> <u>Comunicado: </u>${descricao}`)
+        }
+        
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);

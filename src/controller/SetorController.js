@@ -27,6 +27,7 @@ const SetorController = {
   // Criar uma nova setor
   async criar(req, res) {
     try {
+      console.log(req.body);
       const {nome, ativo } = req.body;
       const novaSetor = await Setor.create({nome, ativo });
       res.status(201).json(novaSetor);

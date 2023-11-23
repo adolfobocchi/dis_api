@@ -84,7 +84,6 @@ const UsuarioController = {
       } else if(ativo == 0 && page == 0) {
         usuarios = await Usuario.find().select(['-password', '-token'])
       }
-      console.log(usuarios);
       return res.status(200).json(usuarios);
     } catch (error) {
       console.log(error)

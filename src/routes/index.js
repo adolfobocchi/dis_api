@@ -20,6 +20,7 @@ const planoAcaoController = require('../controller/PlanoAcaoController');
 const empresaController = require('../controller/EmpresaController');
 const grupoController = require('../controller/GrupoController');
 const videoController = require('../controller/VideoController');
+const configuracaoGeraisController = require('../controller/ConfiguracaoGeraisController');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -66,6 +67,8 @@ router.put('/dis/:id', usuarioController.private, upload.fields([{ name: 'imagen
 // Rota para excluir um DIS
 router.delete('/dis/:id', usuarioController.private, disController.deleteDIS);
 
+router.get('/configuracoes/gerais', usuarioController.private, configuracaoGeraisController.show);
+router.put('/configuracoes/gerais', usuarioController.private, upload.fields([{ name: 'logoFile', maxCount: 1 }]), configuracaoGeraisController.update);
 
 router.get('/areas/:page/:ativo', areaController.listar);
 router.get('/areas/:id', areaController.show);
@@ -151,8 +154,8 @@ router.post('/planosacao', usuarioController.private, planoAcaoController.criar)
 router.put('/planosacao/:id', usuarioController.private, planoAcaoController.update);
 router.delete('/planosacao/:id', usuarioController.private, planoAcaoController.delete);
 
-router.get('/empresas/:page/:ativo', empresaController.listar);
-router.get('/empresas/search', empresaController.search);
+router.get('/empresas/:page/:ativo', usuarioController.private, empresaController.listar);
+router.get('/empresas/search',usuarioController.private, empresaController.search);
 router.get('/empresas/:id', empresaController.show);
 router.post('/empresas', usuarioController.private, empresaController.criar);
 router.put('/empresas/:id', usuarioController.private, empresaController.update);
@@ -174,6 +177,7 @@ router.post('/empresas/planoacao/:id', usuarioController.private, upload.fields(
 router.put('/empresas/planoacao/:id', usuarioController.private, upload.fields([{ name: 'documentoFile' }]), empresaController.updatePlanoAcao);
 router.delete('/empresas/:id/planoacao/:planoAcaoId/:documentoNome', usuarioController.private, empresaController.removePlanoAcao);
 
+router.get('/solicitacoes', usuarioController.private, empresaController.listarSolicitacao);
 router.post('/empresas/solicitacao/:id', usuarioController.private, empresaController.addSolicitacao);
 router.put('/empresas/solicitacao/:id', usuarioController.private, empresaController.updateSolicitacao);
 router.delete('/empresas/:id/solicitacao/:solicitacaoId', usuarioController.private, empresaController.removeSolicitacao);
