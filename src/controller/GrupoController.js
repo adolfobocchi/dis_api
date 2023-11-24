@@ -73,23 +73,31 @@ const GrupoController = {
         grupos = await Grupo.find({ ativo: true })
           .limit(10)
           .skip((page - 1) * 10)
-          .populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
+          .populate('empresas').sort({ nome: 1 })
+          .populate({path: 'empresas', populate: [{path: 'area', model: 'area'}]})
+          .select(['-password', '-token']);
 
       } else if (ativo == 0 && page > 0) {
         grupos = await Grupo.find()
           .limit(10)
           .skip((page - 1) * 10)
-          .populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
+          .populate('empresas').sort({ nome: 1 })
+          .populate({path: 'empresas', populate: [{path: 'area', model: 'area'}]})
+          .select(['-password', '-token']);
 
       } else if (ativo == 1 && page == 0) {
         
         grupos = await Grupo.find({ ativo: true })
-          .populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
+          .populate('empresas').sort({ nome: 1 })
+          .populate({path: 'empresas', populate: [{path: 'area', model: 'area'}]})
+          .select(['-password', '-token']);
 
       } else if (ativo == 0 && page == 0) {
         
         grupos = await Grupo.find()
-          .populate('empresas').sort({ nome: 1 }).select(['-password', '-token']);
+          .populate('empresas').sort({ nome: 1 })
+          .populate({path: 'empresas', populate: [{path: 'area', model: 'area'}]})
+          .select(['-password', '-token']);
 
       }
       return res.status(200).json(grupos);
