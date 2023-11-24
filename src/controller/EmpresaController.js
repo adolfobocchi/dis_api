@@ -273,12 +273,12 @@ const EmpresaController = {
         .populate('grupo.empresas')
         .populate('tecnico')
 
-        if(empresa.grupo.email) {
-          await SendEmail.sendEmail(
-            empresa.grupo.email,
-            'Documento', 
-            `Olá ${empresa.grupo.nome} <br> <u>Data do documento:</u> ${data} <br> <u>Descrição: </u>${descricao}<br> <u>Validade: </u>${validade}`)
-        }
+        // if(empresa.grupo.email) {
+        //   await SendEmail.sendEmail(
+        //     empresa.grupo.email,
+        //     'Documento', 
+        //     `Olá ${empresa.grupo.nome} <br> <u>Data do documento:</u> ${data} <br> <u>Descrição: </u>${descricao}<br> <u>Validade: </u>${validade}`)
+        // }
         
 
       return res.status(201).json(empresa);
@@ -321,12 +321,12 @@ const EmpresaController = {
         .populate('grupo')
         .populate('grupo.empresas')
         .populate('tecnico');
-        if(empresa.grupo.email) {
-          await SendEmail.sendEmail(
-            empresa.grupo.email,
-            'Documento', 
-            `Olá ${empresa.grupo.nome} <br> <u>Data do documento:</u> ${data} <br> <u>Descrição: </u>${descricao}<br> <u>Validade: </u>${validade}`)
-        }
+        // if(empresa.grupo.email) {
+        //   await SendEmail.sendEmail(
+        //     empresa.grupo.email,
+        //     'Documento', 
+        //     `Olá ${empresa.grupo.nome} <br> <u>Data do documento:</u> ${data} <br> <u>Descrição: </u>${descricao}<br> <u>Validade: </u>${validade}`)
+        // }
       return res.status(201).json(empresa);
     } catch (error) {
       console.log(error);
@@ -531,12 +531,12 @@ const EmpresaController = {
         .populate('grupo.empresas')
         .populate('tecnico')
 
-        if(empresa.grupo.email) {
-          await SendEmail.sendEmail(
-            empresa.grupo.email,
-            'Solicitação', 
-            `Olá ${empresa.grupo.nome} <br> <u>Data da solicitação:</u> ${abertura} <br> <u>Descrição: </u>${descricao}<br> <u>Responsavel: </u>${responsavel}`)
-        }
+        // if(empresa.grupo.email) {
+        //   await SendEmail.sendEmail(
+        //     empresa.grupo.email,
+        //     'Solicitação', 
+        //     `Olá ${empresa.grupo.nome} <br> <u>Data da solicitação:</u> ${abertura} <br> <u>Descrição: </u>${descricao}<br> <u>Responsavel: </u>${responsavel}`)
+        // }
 
       return res.status(201).json(empresa);
     } catch (error) {
@@ -588,12 +588,12 @@ const EmpresaController = {
         .populate('grupo.empresas')
         .populate('tecnico');
 
-        if(empresa.grupo.email) {
-          await SendEmail.sendEmail(
-            empresa.grupo.email,
-            'Solicitação', 
-            `Olá ${empresa.grupo.nome} <br> <u>Data da solicitação:</u> ${abertura} <br> <u>Descrição: </u>${descricao}<br> <u>Responsavel: </u>${usuario}`)
-        }
+        // if(empresa.grupo.email) {
+        //   await SendEmail.sendEmail(
+        //     empresa.grupo.email,
+        //     'Solicitação', 
+        //     `Olá ${empresa.grupo.nome} <br> <u>Data da solicitação:</u> ${abertura} <br> <u>Descrição: </u>${descricao}<br> <u>Responsavel: </u>${usuario}`)
+        // }
 
       return res.status(201).json(empresa);
     } catch (error) {
@@ -662,12 +662,12 @@ const EmpresaController = {
       
       const solicitacao = await Empresa.findOne({ _id: req.params.id, 'solicitacoes._id': req.params.solicitacaoId  }, { 'solicitacoes.$': 1 })
       console.log(solicitacao);
-      if(empresa.grupo.email) {
-        await SendEmail.sendEmail(
-          empresa.grupo.email,
-          'Andamento de Solicitação', 
-          `Olá ${empresa.grupo.nome} <br> <u>Data da solicitação:</u> ${solicitacao.solicitacoes[0].abertura} <br> <u>Descrição da solicitação: </u>${solicitacao.solicitacoes[0].descricao}<br> <u>Data da resposta: </u>${data}<br> <u>Resposta: </u>${descricao}`)
-      }
+      // if(empresa.grupo.email) {
+      //   await SendEmail.sendEmail(
+      //     empresa.grupo.email,
+      //     'Andamento de Solicitação', 
+      //     `Olá ${empresa.grupo.nome} <br> <u>Data da solicitação:</u> ${solicitacao.solicitacoes[0].abertura} <br> <u>Descrição da solicitação: </u>${solicitacao.solicitacoes[0].descricao}<br> <u>Data da resposta: </u>${data}<br> <u>Resposta: </u>${descricao}`)
+      // }
       return res.status(201).json(solicitacao);
     } catch (error) {
       console.log(error);
@@ -755,12 +755,12 @@ const EmpresaController = {
         .populate('grupo.empresas')
         .populate('tecnico')
 
-        if(empresa.grupo.email) {
-          await SendEmail.sendEmail(
-            empresa.grupo.email,
-            'Comunicado', 
-            `Olá ${empresa.grupo.nome} <br> <u>Data do comunicado:</u> ${data} <br> <u>Comunicado: </u>${descricao}`)
-        }
+        // if(empresa.grupo.email) {
+        //   await SendEmail.sendEmail(
+        //     empresa.grupo.email,
+        //     'Comunicado', 
+        //     `Olá ${empresa.grupo.nome} <br> <u>Data do comunicado:</u> ${data} <br> <u>Comunicado: </u>${descricao}`)
+        // }
         
 
       return res.status(201).json(empresa);
@@ -797,12 +797,12 @@ const EmpresaController = {
         .populate('grupo')
         .populate('grupo.empresas')
         .populate('tecnico');
-        if(empresa.grupo.email) {
-          await SendEmail.sendEmail(
-            empresa.grupo.email,
-            'Comunicado', 
-            `Olá ${empresa.grupo.nome} <br> <u>Data do comunicado:</u> ${data} <br> <u>Comunicado: </u>${descricao}`)
-        }
+        // if(empresa.grupo.email) {
+        //   await SendEmail.sendEmail(
+        //     empresa.grupo.email,
+        //     'Comunicado', 
+        //     `Olá ${empresa.grupo.nome} <br> <u>Data do comunicado:</u> ${data} <br> <u>Comunicado: </u>${descricao}`)
+        // }
         
       return res.status(201).json(empresa);
     } catch (error) {
